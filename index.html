@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <!-- ✅ Le viewport permet au site de s'adapter aux téléphones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ✅ Description pour les moteurs de recherche (Google) -->
+  <meta name="description" content="Portfolio professionnel de Bahati Kamina, développeur web." />
+  <title>Bahati Kamina — Portfolio</title>
+
+  <!-- Google Fonts : on importe une belle police professionnelle -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+
+  <!-- Notre feuille de style CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- 
+    ✅ CORRECTION : On met le script UNE SEULE FOIS, en bas du body
+    (dans ton code original, script.js était chargé deux fois !)
+  -->
+</head>
+<body>
+
+  <!-- ========== BARRE DE NAVIGATION ========== -->
+  <!-- 
+    ✅ CORRECTION : On utilise <nav> une seule fois (tu en avais deux vides)
+    ✅ CORRECTION : Les ancres (#accueil, #apropos...) correspondent 
+       exactement aux id= des sections ci-dessous
+  -->
+  <nav id="navbar">
+    <div class="nav-logo"><> BK</div>
+    <ul class="nav-links">
+      <li><a href="#accueil"   class="nav-link active">Accueil</a></li>
+      <li><a href="#apropos"   class="nav-link">À propos</a></li>
+      <li><a href="#competences" class="nav-link">Compétences</a></li>
+      <li><a href="#projets"   class="nav-link">Projets</a></li>
+      <li><a href="#contact"   class="nav-link">Contact</a></li>
+    </ul>
+    <!-- Bouton hamburger pour mobile -->
+    <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ========== EN-TÊTE (HERO) ========== -->
+  <header id="accueil">
+    <!-- Fond décoratif animé -->
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <!-- 
+        ✅ CORRECTION : width et height doivent être en CSS, pas en attributs HTML
+        L'attribut width="150px" est incorrect (px n'est pas valide en HTML)
+      -->
+      <img
+        src="image/moi.jpg.jpg"
+        alt="Photo de profil de Bahati Kamina"
+        class="profile"/>
+      <h1>
+        <!-- Le titre aura un effet "typing" grâce au JavaScript -->
+        <span id="typing-text"></span>
+        <span class="cursor">|</span>
+      </h1>
+      <p class="hero-subtitle">
+        Étudiant passionné par l'informatique &amp; le développement web
+      </p>
+      <!-- Bouton qui fait défiler vers la section "À propos" -->
+      <a href="#apropos" class="btn btn-primary">Découvrir mon profil</a>
+    </div>
+  </header>
+
+  <!-- ========== SECTION À PROPOS ========== -->
+  <!-- 
+    ✅ CORRECTION : class="hidden" pour l'animation d'apparition
+    (avant, la section contact avait l'attribut HTML "hidden" qui la cachait complètement)
+  -->
+  <section id="apropos" class="section hidden">
+    <div class="section-inner">
+      <h2 class="section-title">À propos de moi</h2>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            Je suis <strong>Bahati Kamina</strong>, étudiant en informatique 
+            basé à Bujumbura. Motivé, discipliné et passionné par la technologie, 
+            je crois fermement que le numérique peut transformer l'Afrique — 
+            et je veux faire partie de cette transformation.
+          </p>
+          <p>
+            Mon objectif : devenir développeur professionnel et créer des 
+            solutions numériques innovantes qui répondent aux besoins locaux.
+          </p>
+          <!-- ✅ Ce bouton fait défiler vers les compétences -->
+          <a href="#competences" class="btn btn-outline">Voir mes compétences</a>
+        </div>
+        <!-- Quelques chiffres clés -->
+        <div class="about-stats">
+          <div class="stat-card hidden">
+            <span class="stat-number">3+</span>
+            <span class="stat-label">Technologies maîtrisées</span>
+          </div>
+          <div class="stat-card hidden">
+            <span class="stat-number">1</span>
+            <span class="stat-label">Projet réalisé</span>
+          </div>
+          <div class="stat-card hidden">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Motivation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION COMPÉTENCES ========== -->
+  <!-- 
+    ✅ CORRECTION : id="competences" SANS accent
+    Les accents dans les id peuvent causer des bugs dans certains navigateurs
+  -->
+  <section id="competences" class="section hidden">
+    <div class="section-inner">
+      <h2 class="section-title">Mes compétences</h2>
+      <!-- 
+        ✅ CORRECTION : La classe s'appelle "skills-grid" (cohérent)
+        (avant il y avait "skeel" — faute de frappe — et "skills" en double)
+      -->
+      <div class="skills-grid">
+
+        <!-- Chaque carte de compétence -->
+        <div class="card hidden" data-delay="0">
+          <div class="card-icon">🌐</div>
+          <h3>HTML</h3>
+          <p>Création de la structure des pages web avec des balises sémantiques.</p>
+          <div class="skill-bar"><div class="skill-fill" style="--w:75%"></div></div>
+        </div>
+
+        <div class="card hidden" data-delay="100">
+          <div class="card-icon">🎨</div>
+          <h3>CSS</h3>
+          <p>Mise en forme, animations et design responsive des sites web.</p>
+          <div class="skill-bar"><div class="skill-fill" style="--w:65%"></div></div>
+        </div>
+
+        <div class="card hidden" data-delay="200">
+          <div class="card-icon">⚡</div>
+          <h3>JavaScript</h3>
+          <p>Ajout d'interactivité et de dynamisme dans les sites web.</p>
+          <div class="skill-bar"><div class="skill-fill" style="--w:50%"></div></div>
+        </div>
+
+        <div class="card hidden" data-delay="300">
+          <div class="card-icon">📝</div>
+          <h3>Microsoft Word</h3>
+          <p>Traitement de texte et insertion d'images professionnelles.</p>
+          <div class="skill-bar"><div class="skill-fill" style="--w:90%"></div></div>
+        </div>
+
+        <div class="card hidden" data-delay="400">
+          <div class="card-icon">📊</div>
+          <h3>Microsoft Excel</h3>
+          <p>Calculs, formules et gestion de données en tableau.</p>
+          <div class="skill-bar"><div class="skill-fill" style="--w:80%"></div></div>
+        </div>
+
+        <div class="card hidden" data-delay="500">
+          <div class="card-icon">📽️</div>
+          <h3>PowerPoint</h3>
+          <p>Création de présentations visuelles percutantes.</p>
+          <div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div>
+        </div>
+
+      </div><!-- fin .skills-grid -->
+    </div>
+  </section>
+
+  <!-- ========== SECTION PROJETS ========== -->
+  <section id="projets" class="section hidden">
+    <div class="section-inner">
+      <h2 class="section-title">Mes projets</h2>
+      <div class="projects-grid">
+
+        <div class="project-card hidden">
+          <div class="project-tag">HTML · CSS · JS</div>
+          <h3>Portfolio personnel</h3>
+          <p>
+            Création de mon site web personnel pour présenter mes compétences 
+            et mon parcours. Développé en HTML, CSS et JavaScript.
+          </p>
+          <a href="#" class="btn btn-small">Voir le projet</a>
+        </div>
+
+        <div class="project-card hidden" data-delay="150">
+          <div class="project-tag">Académique</div>
+          <h3>Travaux académiques</h3>
+          <p>
+            Réalisation de rapports, exposés et travaux pratiques 
+            dans le cadre de ma formation en informatique.
+          </p>
+          <a href="#" class="btn btn-small">En savoir plus</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SECTION CONTACT ========== -->
+  <!-- 
+    ✅ CORRECTION : On supprime l'attribut HTML "hidden" 
+    (hidden = l'élément est complètement invisible ET inaccessible)
+    On utilise notre classe CSS .hidden à la place
+  -->
+  <section id="contact" class="section hidden">
+    <div class="section-inner">
+      <h2 class="section-title">Me contacter</h2>
+      <p class="contact-intro">Tu as un projet ? Parlons-en !</p>
+
+      <!-- 
+        ✅ BONNE PRATIQUE : Le formulaire a action="#" et method="post"
+        ✅ Chaque input a un label associé (accessibilité)
+        ✅ Les champs ont name= et required pour la validation HTML native
+      -->
+      <form id="contact-form" action="#" method="post" novalidate>
+
+        <div class="form-group">
+          <label for="name">Votre nom</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            minlength="2"
+          />
+          <!-- Message d'erreur affiché par JavaScript -->
+          <span class="error-msg" id="name-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Votre email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+          />
+          <span class="error-msg" id="email-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Votre message</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            required
+            minlength="10"
+          ></textarea>
+          <span class="error-msg" id="message-error"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-btn">
+          Envoyer le message
+        </button>
+
+        <!-- Message de succès affiché après envoi -->
+        <div id="form-success" class="success-msg" aria-live="polite"></div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ========== PIED DE PAGE ========== -->
+  <footer>
+    <p>© 2026 <strong>Bahati Kamina</strong> | Tous droits réservés</p>
+    <p class="footer-sub">Fait avec ❤️ à Bujumbura</p>
+  </footer>
+
+  <!-- ========== BOUTON RETOUR EN HAUT ========== -->
+  <!-- 
+    ✅ CORRECTION : Ce bouton est placé EN DEHORS des sections
+    (dans ton code il était bizarrement dans une carte de compétence !)
+  -->
+  <button id="btn-top" aria-label="Retour en haut de page" title="Haut de page">
+    ↑
+  </button>
+
+  <!-- Script JavaScript — chargé en dernier pour que le HTML soit prêt -->
+  <script src="script.js"></script>
+
+</body>
+</html>

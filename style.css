@@ -1,0 +1,774 @@
+
+/* ============================================================
+   STYLE.CSS — Portfolio de Bahati Kamina
+   Style : Professionnel bleu moderne, épuré et élégant
+   ============================================================ */
+
+/* ----------------------------------------------------------
+   1. VARIABLES CSS (= "réglages globaux")
+   Avantage : changer une couleur ici la change partout !
+   ---------------------------------------------------------- */
+:root {
+  /* Palette de couleurs */
+  --bleu-fonce:    #050e1f;   /* fond principal */
+  --bleu-moyen:    #0a1930;   /* cartes, nav */
+  --bleu-accent:   #0d6efd;   /* boutons, liens */
+  --bleu-clair:    #4da3ff;   /* textes accentués */
+  --bleu-glow:     rgba(13, 110, 253, 0.25); /* lueur */
+
+  /* Typographie */
+  --font-titre:    'Space Mono', monospace;
+  --font-corps:    'DM Sans', sans-serif;
+
+  /* Couleurs de texte */
+  --texte-clair:   #e8f0fe;
+  --texte-gris:    #8a9bb5;
+
+  /* Espacements */
+  --section-pad:   80px 20px;
+  --radius:        12px;
+
+  /* Animations */
+  --transition:    0.3s ease;
+}
+
+/* ----------------------------------------------------------
+   2. RESET & BASE
+   On repart d'une base propre pour éviter les surprises
+   ---------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  /* ✅ box-sizing : évite que padding/border débordent du conteneur */
+  box-sizing: border-box;
+  margin:  0;
+  padding: 0;
+}
+
+html {
+  /* ✅ scroll-behavior : le défilement devient doux (smooth scroll CSS) */
+  scroll-behavior: smooth;
+  /* ✅ scroll-padding-top : compense la navbar fixe lors des ancres */
+  scroll-padding-top: 70px;
+}
+
+body {
+  font-family:      var(--font-corps);
+  background-color: var(--bleu-fonce);
+  color:            var(--texte-clair);
+  line-height:      1.7;
+  /* ✅ overflow-x:hidden évite le scroll horizontal indésirable */
+  overflow-x: hidden;
+}
+
+/* ----------------------------------------------------------
+   3. BARRE DE NAVIGATION
+   ---------------------------------------------------------- */
+#navbar {
+  position:   fixed;          /* Reste en haut pendant le scroll */
+  top:        0;
+  left:       0;
+  width:      100%;
+  z-index:    1000;           /* Toujours au-dessus de tout */
+  background: rgba(5, 14, 31, 0.85);
+  /* ✅ backdrop-filter : effet "verre" flou derrière la navbar */
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter:         blur(12px);
+  border-bottom: 1px solid rgba(13, 110, 253, 0.2);
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         0 40px;
+  height:          65px;
+  transition:      background var(--transition);
+}
+
+/* Logo "BK" dans la navbar */
+.nav-logo {
+  font-family: var(--font-titre);
+  font-size:   1.4rem;
+  color:       var(--bleu-accent);
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+/* Liste des liens de navigation */
+.nav-links {
+  list-style: none;   /* ✅ On enlève les puces */
+  display:    flex;
+  gap:        32px;
+}
+
+.nav-link {
+  color:           var(--texte-gris);
+  text-decoration: none;
+  font-weight:     500;
+  font-size:       0.9rem;
+  letter-spacing:  0.5px;
+  position:        relative;
+  transition:      color var(--transition);
+  padding-bottom:  4px;
+}
+
+/* Ligne animée sous le lien au survol */
+.nav-link::after {
+  content:    '';
+  position:   absolute;
+  bottom:     0;
+  left:       0;
+  width:      0%;
+  height:     2px;
+  background: var(--bleu-accent);
+  transition: width var(--transition);
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--texte-clair);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Bouton hamburger (visible sur mobile uniquement) */
+.hamburger {
+  display:        none;
+  flex-direction: column;
+  gap:            5px;
+  background:     none;
+  border:         none;
+  cursor:         pointer;
+  padding:        5px;
+}
+
+.hamburger span {
+  display:    block;
+  width:      25px;
+  height:     2px;
+  background: var(--texte-clair);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+/* ----------------------------------------------------------
+   4. EN-TÊTE (HERO)
+   ---------------------------------------------------------- */
+header#accueil {
+  min-height:      100vh;     /* Prend toute la hauteur de l'écran */
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  text-align:      center;
+  padding:         100px 20px 60px;
+  position:        relative;
+  overflow:        hidden;
+}
+
+/* Fond animé avec dégradé */
+.hero-bg {
+  position:   absolute;
+  inset:      0;              /* = top:0; right:0; bottom:0; left:0 */
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(13,110,253,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(77,163,255,0.1) 0%, transparent 40%),
+    var(--bleu-fonce);
+  z-index: 0;
+}
+
+/* Le contenu du hero est AU-DESSUS du fond */
+.hero-content {
+  position:  relative;
+  z-index:   1;
+  max-width: 600px;
+}
+
+/* Photo de profil */
+.profile {
+  width:         140px;
+  height:        140px;
+  border-radius: 50%;           /* Rend l'image ronde */
+  object-fit:    cover;         /* L'image remplit bien le cercle */
+  border:        3px solid var(--bleu-accent);
+  /* ✅ box-shadow : lueur bleue autour de la photo */
+  box-shadow:    0 0 0 6px var(--bleu-glow), 0 20px 40px rgba(0,0,0,0.4);
+  margin-bottom: 24px;
+  /* Animation d'entrée */
+  animation: fadeDown 0.8s ease both;
+}
+
+/* Titre principal (h1) */
+header h1 {
+  font-family: var(--font-titre);
+  font-size:   clamp(1.8rem, 5vw, 3rem); /* ✅ clamp = taille fluide selon l'écran */
+  font-weight: 700;
+  color:       var(--texte-clair);
+  margin-bottom: 16px;
+  min-height:  1.2em;           /* Espace réservé pour l'effet typing */
+}
+
+/* Curseur clignotant pour l'effet typing */
+.cursor {
+  animation: blink 0.8s step-end infinite;
+  color:     var(--bleu-accent);
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Sous-titre du hero */
+.hero-subtitle {
+  color:         var(--texte-gris);
+  font-size:     1.1rem;
+  margin-bottom: 32px;
+  animation:     fadeUp 1s ease 0.5s both;
+}
+
+/* ----------------------------------------------------------
+   5. BOUTONS
+   ---------------------------------------------------------- */
+.btn {
+  display:         inline-block;
+  padding:         12px 28px;
+  border-radius:   var(--radius);
+  font-family:     var(--font-corps);
+  font-weight:     600;
+  font-size:       0.95rem;
+  text-decoration: none;
+  cursor:          pointer;
+  border:          2px solid transparent;
+  transition:      all var(--transition);
+  letter-spacing:  0.3px;
+}
+
+/* Bouton principal (bleu plein) */
+.btn-primary {
+  background: rgba(0, 0, 0, 0.868);
+  color:     rgba(0, 0, 255, 0.806);
+  border-color: var(--bleu-accent);
+  box-shadow:   0 4px 20px var(--bleu-glow);
+}
+
+.btn-primary:hover {
+  background:  transparent;
+  color:       var(--bleu-accent);
+  transform:   translateY(-2px);
+  box-shadow:  0 8px 30px var(--bleu-glow);
+}
+
+/* Bouton secondaire (contour) */
+.btn-outline {
+  background:   transparent;
+  color:        var(--bleu-accent);
+  border-color: var(--bleu-accent);
+}
+
+.btn-outline:hover {
+  background: var(--bleu-accent);
+  color:      white;
+  transform:  translateY(-2px);
+}
+
+/* Petit bouton pour les projets */
+.btn-small {
+  padding:   8px 18px;
+  font-size: 0.85rem;
+  background: var(--bleu-accent);
+  color:      white;
+  border-color: var(--bleu-accent);
+}
+
+.btn-small:hover {
+  background: transparent;
+  color:      var(--bleu-accent);
+}
+
+/* ----------------------------------------------------------
+   6. SECTIONS (structure commune)
+   ---------------------------------------------------------- */
+.section {
+  padding:   var(--section-pad);
+  /* ✅ On ajoute padding-top pour compenser la navbar fixe */
+  padding-top: 100px;
+}
+
+/* Conteneur centré avec largeur max */
+.section-inner {
+  max-width: 960px;
+  margin:    0 auto;
+}
+
+/* Titre de section */
+.section-title {
+  font-family:   var(--font-titre);
+  font-size:     clamp(1.5rem, 4vw, 2.2rem);
+  color:         var(--texte-clair);
+  margin-bottom: 48px;
+  position:      relative;
+  display:       inline-block;
+}
+
+/* Ligne décorative sous le titre */
+.section-title::after {
+  content:    '';
+  position:   absolute;
+  bottom:     -10px;
+  left:       0;
+  width:      50px;
+  height:     3px;
+  background: var(--bleu-accent);
+  border-radius: 2px;
+}
+
+/* ----------------------------------------------------------
+   7. SECTION À PROPOS
+   ---------------------------------------------------------- */
+.about-grid {
+  display:   grid;
+  /* 2 colonnes sur grand écran, 1 colonne sur petit écran */
+  grid-template-columns: 1fr 1fr;
+  gap:       48px;
+  align-items: center;
+}
+
+.about-text p {
+  color:         var(--texte-gris);
+  margin-bottom: 16px;
+  font-size:     1.05rem;
+}
+
+.about-text p strong {
+  color: var(--bleu-clair);
+}
+
+.about-text .btn {
+  margin-top: 8px;
+}
+
+/* Cartes de statistiques */
+.about-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-card {
+  background:    var(--bleu-moyen);
+  border:        1px solid rgba(13,110,253,0.2);
+  border-radius: var(--radius);
+  padding:       20px 24px;
+  display:       flex;
+  align-items:   center;
+  gap:           16px;
+  transition:    border-color var(--transition), transform var(--transition);
+}
+
+.stat-card:hover {
+  border-color: var(--bleu-accent);
+  transform:    translateX(4px);
+}
+
+.stat-number {
+  font-family: var(--font-titre);
+  font-size:   1.8rem;
+  color:       var(--bleu-accent);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-label {
+  color:     var(--texte-gris);
+  font-size: 0.9rem;
+}
+
+/* ----------------------------------------------------------
+   8. SECTION COMPÉTENCES
+   ---------------------------------------------------------- */
+.skills-grid {
+  display:               grid;
+  /* Colonnes automatiques, min 240px chacune */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap:                   24px;
+}
+
+/* Carte de compétence */
+.card {
+  background:    var(--bleu-moyen);
+  border:        1px solid rgba(13,110,253,0.15);
+  border-radius: var(--radius);
+  padding:       28px 24px;
+  /* ✅ transition sur plusieurs propriétés à la fois */
+  transition:    transform var(--transition),
+                 border-color var(--transition),
+                 box-shadow var(--transition);
+  position:      relative;
+  overflow:      hidden;
+}
+
+/* Lueur au survol d'une carte */
+.card::before {
+  content:    '';
+  position:   absolute;
+  top:        0;
+  left:       0;
+  right:      0;
+  height:     2px;
+  background: linear-gradient(90deg, transparent, var(--bleu-accent), transparent);
+  opacity:    0;
+  transition: opacity var(--transition);
+}
+
+.card:hover {
+  transform:    translateY(-6px);
+  border-color: var(--bleu-accent);
+  box-shadow:   0 12px 40px var(--bleu-glow);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+/* Icône de la carte */
+.card-icon {
+  font-size:     2rem;
+  margin-bottom: 12px;
+}
+
+.card h3 {
+  font-family:   var(--font-titre);
+  font-size:     1rem;
+  color:         var(--texte-clair);
+  margin-bottom: 8px;
+}
+
+.card p {
+  color:     var(--texte-gris);
+  font-size: 0.9rem;
+}
+
+/* Barre de progression de compétence */
+.skill-bar {
+  background:    rgba(255,255,255,0.08);
+  border-radius: 99px;
+  height:        6px;
+  margin-top:    16px;
+  overflow:      hidden;
+}
+
+.skill-fill {
+  height:        100%;
+  width:         0%;              /* Démarre à 0, animé par JS */
+  background:    linear-gradient(90deg, var(--bleu-accent), var(--bleu-clair));
+  border-radius: 99px;
+  transition:    width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Quand la carte est visible, on déclenche la barre */
+.card.show .skill-fill {
+  width: var(--w);
+}
+
+/* ----------------------------------------------------------
+   9. SECTION PROJETS
+   ---------------------------------------------------------- */
+.projects-grid {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap:                   28px;
+}
+
+.project-card {
+  background:    var(--bleu-moyen);
+  border:        1px solid rgba(13,110,253,0.15);
+  border-radius: var(--radius);
+  padding:       32px 28px;
+  transition:    transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+
+.project-card:hover {
+  transform:    translateY(-6px);
+  border-color: var(--bleu-accent);
+  box-shadow:   0 16px 40px var(--bleu-glow);
+}
+
+/* Étiquette de technologie */
+.project-tag {
+  display:       inline-block;
+  background:    rgba(13,110,253,0.15);
+  color:         var(--bleu-clair);
+  border:        1px solid rgba(13,110,253,0.3);
+  border-radius: 99px;
+  padding:       4px 14px;
+  font-size:     0.78rem;
+  font-weight:   600;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+}
+
+.project-card h3 {
+  font-family:   var(--font-titre);
+  font-size:     1.1rem;
+  color:         var(--texte-clair);
+  margin-bottom: 12px;
+}
+
+.project-card p {
+  color:         var(--texte-gris);
+  font-size:     0.92rem;
+  margin-bottom: 20px;
+  line-height:   1.6;
+}
+
+/* ----------------------------------------------------------
+   10. SECTION CONTACT
+   ---------------------------------------------------------- */
+.contact-intro {
+  color:         var(--texte-gris);
+  font-size:     1.1rem;
+  margin-bottom: 36px;
+}
+
+#contact-form {
+  max-width: 560px;
+}
+
+/* Groupe label + input */
+.form-group {
+  display:        flex;
+  flex-direction: column;
+  margin-bottom:  20px;
+}
+
+.form-group label {
+  font-size:     0.9rem;
+  font-weight:   500;
+  color:         var(--texte-gris);
+  margin-bottom: 8px;
+}
+
+/* ✅ CORRECTION : width: 100% (ton code avait width: 100px — une erreur !) */
+input,
+textarea {
+  width:         100%;
+  padding:       12px 16px;
+  background:    var(--bleu-moyen);
+  border:        1px solid rgba(13,110,253,0.2);
+  border-radius: 8px;
+  color:         var(--texte-clair);
+  font-family:   var(--font-corps);
+  font-size:     0.95rem;
+  transition:    border-color var(--transition), box-shadow var(--transition);
+  outline:       none;
+  resize:        vertical;    /* Seul le redimensionnement vertical est autorisé */
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--bleu-accent);
+  box-shadow:   0 0 0 3px var(--bleu-glow);
+}
+
+/* Champ invalide (après validation JS) */
+input.invalid,
+textarea.invalid {
+  border-color: #e05252;
+  box-shadow:   0 0 0 3px rgba(224, 82, 82, 0.2);
+}
+
+/* Message d'erreur de validation */
+.error-msg {
+  color:     #e05252;
+  font-size: 0.82rem;
+  margin-top: 6px;
+  min-height: 1em;
+}
+
+/* Message de succès après envoi */
+.success-msg {
+  margin-top:    16px;
+  padding:       14px 18px;
+  background:    rgba(13,200,100,0.1);
+  border:        1px solid rgba(13,200,100,0.3);
+  border-radius: 8px;
+  color:         #4dca88;
+  font-size:     0.95rem;
+  display:       none;          /* Caché par défaut, affiché par JS */
+}
+
+/* ----------------------------------------------------------
+   11. PIED DE PAGE
+   ---------------------------------------------------------- */
+footer {
+  background:    var(--bleu-moyen);
+  border-top:    1px solid rgba(13,110,253,0.15);
+  text-align:    center;
+  padding:       40px 20px;
+  color:         var(--texte-gris);
+  font-size:     0.9rem;
+}
+
+.footer-sub {
+  margin-top: 8px;
+  font-size:  0.82rem;
+  opacity:    0.6;
+}
+
+/* ----------------------------------------------------------
+   12. BOUTON "RETOUR EN HAUT"
+   ---------------------------------------------------------- */
+#btn-top {
+  position:   fixed;
+  bottom:     32px;
+  right:      32px;
+  z-index:    999;
+  width:      48px;
+  height:     48px;
+  border-radius: 50%;
+  background: var(--bleu-accent);
+  color:      white;
+  border:     none;
+  font-size:  1.2rem;
+  cursor:     pointer;
+  /* Caché au départ : opacity 0 ET pointer-events none */
+  opacity:    0;
+  pointer-events: none;
+  transform:  translateY(20px);
+  transition: all var(--transition);
+  box-shadow: 0 4px 20px var(--bleu-glow);
+}
+
+/* Classe ajoutée par JS quand on scroll assez bas */
+#btn-top.visible {
+  opacity:        1;
+  pointer-events: auto;
+  transform:      translateY(0);
+}
+
+#btn-top:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px var(--bleu-glow);
+}
+
+/* ----------------------------------------------------------
+   13. ANIMATIONS D'APPARITION
+   ---------------------------------------------------------- */
+
+/* État initial : invisible et décalé vers le bas */
+.hidden {
+  opacity:   0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+/* État final : visible et à sa position normale */
+.show {
+  opacity:   1;
+  transform: translateY(0);
+}
+
+/* Animation délayée selon l'attribut data-delay */
+[data-delay="100"] { transition-delay: 100ms; }
+[data-delay="150"] { transition-delay: 150ms; }
+[data-delay="200"] { transition-delay: 200ms; }
+[data-delay="300"] { transition-delay: 300ms; }
+[data-delay="400"] { transition-delay: 400ms; }
+[data-delay="500"] { transition-delay: 500ms; }
+
+/* Animations CSS keyframes */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ----------------------------------------------------------
+   14. RESPONSIVE DESIGN (Téléphones & Tablettes)
+   
+   Principe : on utilise des "media queries"
+   @media = "si l'écran est plus petit que X pixels, alors..."
+   ---------------------------------------------------------- */
+
+/* Tablette (max 768px) */
+@media (max-width: 768px) {
+
+  /* Navigation : on cache les liens, on affiche le hamburger */
+  .nav-links {
+    position:   fixed;
+    top:        65px;
+    left:       0;
+    width:      100%;
+    background: var(--bleu-moyen);
+    flex-direction: column;
+    align-items:    center;
+    padding:        24px 0;
+    gap:            20px;
+    /* Caché par défaut sur mobile */
+    transform:  translateY(-100%);
+    opacity:    0;
+    pointer-events: none;
+    transition: all var(--transition);
+    border-bottom: 1px solid rgba(13,110,253,0.2);
+  }
+
+  /* Classe ajoutée par JS quand on clique sur hamburger */
+  .nav-links.open {
+    transform:      translateY(0);
+    opacity:        1;
+    pointer-events: auto;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Grille À propos : 1 colonne sur mobile */
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  /* Bouton retour en haut : plus petit sur mobile */
+  #btn-top {
+    bottom: 20px;
+    right:  20px;
+    width:  42px;
+    height: 42px;
+  }
+
+  .section {
+    padding-top: 90px;
+  }
+}
+
+/* Grand mobile (max 480px) */
+@media (max-width: 480px) {
+  #navbar {
+    padding: 0 20px;
+  }
+
+  header#accueil {
+    padding: 90px 16px 50px;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+
+  .about-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    flex: 1 1 120px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
