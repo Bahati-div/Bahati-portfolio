@@ -531,6 +531,19 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }, 100);
   }
+   const hiddenElements = document.querySelectorAll(".hidden");
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+
+hiddenElements.forEach(el=>{
+    observer.observe(el);
+});
 
   animerElementsInitiaux();
 
