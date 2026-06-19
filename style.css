@@ -772,3 +772,24 @@ footer {
     gap: 8px;
   }
 }
+.cv-card{
+    background: #0a1930;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.cv-card h3{
+    color:#4da3ff;
+    margin-bottom:15px;
+}
+
+.cv-card h4{
+    color:#4da3ff;
+    margin-top:20px;
+    margin-bottom:10px;
+}
+
+.cv-card ul{
+    padding-left:20px;
+}
