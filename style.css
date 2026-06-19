@@ -250,6 +250,10 @@ header h1 {
   border-color: var(--bleu-accent);
   box-shadow:   0 4px 20px var(--bleu-glow);
 }
+.btn-primary {
+  background: #0d6efd;
+  color: white;
+}
 
 .btn-primary:hover {
   background:  transparent;
