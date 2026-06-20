@@ -324,6 +324,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   effetsCartes();
 
+   
+
 
   /* ==========================================================
      ✅ FONCTIONNALITÉ 8 : VALIDATION DU FORMULAIRE
@@ -370,6 +372,125 @@ document.addEventListener('DOMContentLoaded', function () {
         effacerErreur(champ.id);
       });
     });
+
+     // ================================
+// EFFET MACHINE À ÉCRIRE
+// ================================
+
+const typingText = document.getElementById("typing-text");
+
+const text = "Bahati Kamina";
+let index = 0;
+
+function typeWriter() {
+    if (index < text.length) {
+        typingText.textContent += text.charAt(index);
+        index++;
+        setTimeout(typeWriter, 120);
+    }
+}
+
+window.addEventListener("load", typeWriter);
+
+// ================================
+// ANIMATION AU SCROLL
+// ================================
+
+const hiddenElements = document.querySelectorAll(".hidden");
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+        }
+
+    });
+});
+
+hiddenElements.forEach(el => {
+    observer.observe(el);
+});
+
+// ================================
+// BARRES DE COMPÉTENCES
+// ================================
+
+const skills = document.querySelectorAll(".skill-fill");
+
+const skillObserver = new IntersectionObserver((entries) => {
+
+    entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+            const width = entry.target.style.getPropertyValue("--w");
+
+            entry.target.style.width = width;
+        }
+
+    });
+
+});
+
+skills.forEach(skill => {
+    skillObserver.observe(skill);
+});
+
+// ================================
+// BOUTON RETOUR EN HAUT
+// ================================
+
+const btnTop = document.getElementById("btn-top");
+
+window.addEventListener("scroll", () => {
+
+    if (window.scrollY > 300) {
+        btnTop.style.display = "block";
+    } else {
+        btnTop.style.display = "none";
+    }
+
+});
+
+btnTop.addEventListener("click", () => {
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+// ================================
+// MENU MOBILE
+// ================================
+
+const hamburger = document.getElementById("hamburger");
+const navLinks = document.querySelector(".nav-links");
+
+hamburger.addEventListener("click", () => {
+
+    navLinks.classList.toggle("active");
+
+});
+
+// ================================
+// FORMULAIRE
+// ================================
+
+const form = document.getElementById("contact-form");
+
+form.addEventListener("submit", (e) => {
+
+    e.preventDefault();
+
+    document.getElementById("form-success").textContent =
+        "Votre message a été envoyé avec succès !";
+
+    form.reset();
+
+});
 
     /* -- Soumission du formulaire -- */
     formulaire.addEventListener('submit', function (e) {
@@ -541,6 +662,7 @@ const observer = new IntersectionObserver((entries)=>{
     });
 });
 
+   
 hiddenElements.forEach(el=>{
     observer.observe(el);
 });
