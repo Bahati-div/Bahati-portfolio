@@ -378,8 +378,10 @@ document.addEventListener('DOMContentLoaded', function () {
 // ================================
 
 const typingText = document.getElementById("typing-text");
-
 const text = "Bahati Kamina";
+
+typingText.textContent = "";
+
 let index = 0;
 
 function typeWriter() {
@@ -390,7 +392,11 @@ function typeWriter() {
     }
 }
 
-window.addEventListener("load", typeWriter);
+window.addEventListener("load", () => {
+    typingText.textContent = "";
+    index = 0;
+    typeWriter();
+});
 
 // ================================
 // ANIMATION AU SCROLL
