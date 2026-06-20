@@ -829,3 +829,53 @@ footer {
 .cv-card ul{
     padding-left:20px;
 }
+
+/* Animation apparition */
+
+.hidden{
+    opacity:0;
+    transform:translateY(50px);
+    transition:all .8s ease;
+}
+
+.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* Hover cartes */
+
+.card:hover,
+.project-card:hover{
+    transform:translateY(-10px);
+    transition:.4s;
+}
+
+/* Barres compétences */
+
+.skill-fill{
+    width:0;
+    height:100%;
+    transition:width 2s ease;
+}
+
+/* Bouton retour haut */
+
+#btn-top{
+    display:none;
+}
+
+/* Menu mobile */
+
+@media(max-width:768px){
+
+    .nav-links{
+        display:none;
+        flex-direction:column;
+    }
+
+    .nav-links.active{
+        display:flex;
+    }
+
+}
