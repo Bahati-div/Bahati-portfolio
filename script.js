@@ -85,37 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // On appelle la fonction
   afficherBienvenue();
-
-
-  /* ==========================================================
-     ✅ FONCTIONNALITÉ 2 : EFFET "TYPING" SUR LE TITRE
-     
-     On affiche le nom lettre par lettre, comme si quelqu'un
-     tapait au clavier. Crée une première impression forte !
-     ========================================================== */
-  function effetTyping() {
-    // Le texte à "taper"
-    const texte     = 'Bahati Kamina';
-    // L'élément HTML où on va écrire
-    const element   = document.getElementById('typing-text');
-
-    // Si l'élément n'existe pas, on sort (sécurité)
-    if (!element) return;
-
-    let index = 0; // Indice de la lettre actuelle
-
-    // setInterval = "répéter une action toutes les X millisecondes"
-    const intervalle = setInterval(function () {
-      // On ajoute une lettre à chaque fois
-      element.textContent += texte[index];
-      index++;
-
-      // Quand on a affiché toutes les lettres, on arrête
-      if (index >= texte.length) {
-        clearInterval(intervalle); // Arrêter la répétition
-      }
-    }, 90); // 90ms entre chaque lettre = vitesse naturelle
-  }
+   
 
   effetTyping();
 
