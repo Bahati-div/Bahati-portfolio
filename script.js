@@ -372,32 +372,7 @@ document.addEventListener('DOMContentLoaded', function () {
         effacerErreur(champ.id);
       });
     });
-
-     // ================================
-// EFFET MACHINE À ÉCRIRE
-// ================================
-
-const typingText = document.getElementById("typing-text");
-const text = "Bahati Kamina";
-
-typingText.textContent = "";
-
-let index = 0;
-
-function typeWriter() {
-    if (index < text.length) {
-        typingText.textContent += text.charAt(index);
-        index++;
-        setTimeout(typeWriter, 120);
-    }
-}
-
-window.addEventListener("load", () => {
-    typingText.textContent = "";
-    index = 0;
-    typeWriter();
-});
-
+     
 // ================================
 // ANIMATION AU SCROLL
 // ================================
