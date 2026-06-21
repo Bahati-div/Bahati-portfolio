@@ -1,55 +1,81 @@
-
 /* ============================================================
    STYLE.CSS — Portfolio de Bahati Kamina
    Style : Professionnel bleu moderne, épuré et élégant
+   Supporte le mode sombre (par défaut) et le mode clair
    ============================================================ */
 
 /* ----------------------------------------------------------
-   1. VARIABLES CSS (= "réglages globaux")
-   Avantage : changer une couleur ici la change partout !
+   1. VARIABLES CSS — THÈME SOMBRE (par défaut)
    ---------------------------------------------------------- */
 :root {
-  /* Palette de couleurs */
-  --bleu-fonce:    #050e1f;   /* fond principal */
-  --bleu-moyen:    #0a1930;   /* cartes, nav */
-  --bleu-accent:   #0d6efd;   /* boutons, liens */
-  --bleu-clair:    #4da3ff;   /* textes accentués */
-  --bleu-glow:     rgba(13, 110, 253, 0.25); /* lueur */
+  --bleu-fonce:    #050e1f;
+  --bleu-moyen:    #0a1930;
+  --bleu-clair-bg: #102246;
+  --bleu-accent:   #0d6efd;
+  --bleu-clair:    #4da3ff;
+  --bleu-glow:     rgba(13, 110, 253, 0.25);
 
-  /* Typographie */
   --font-titre:    'Space Mono', monospace;
   --font-corps:    'DM Sans', sans-serif;
 
-  /* Couleurs de texte */
   --texte-clair:   #e8f0fe;
-  --texte-gris:    #8a9bb5;
+  --texte-gris:    #a9b8d1;
 
-  /* Espacements */
+  --rouge-erreur:  #ff7a7a;
+  --vert-succes:   #4dca88;
+
   --section-pad:   80px 20px;
   --radius:        12px;
 
-  /* Animations */
   --transition:    0.3s ease;
+
+  --navbar-h: 65px;
+}
+
+/* ----------------------------------------------------------
+   1b. THÈME CLAIR — appliqué via [data-theme="light"] sur <html>
+   ---------------------------------------------------------- */
+html[data-theme="light"] {
+  --bleu-fonce:    #f4f7fc;
+  --bleu-moyen:    #ffffff;
+  --bleu-clair-bg: #eaf1ff;
+  --bleu-accent:   #0d6efd;
+  --bleu-clair:    #2563eb;
+  --bleu-glow:     rgba(13, 110, 253, 0.18);
+
+  --texte-clair:   #0d1b2e;
+  --texte-gris:    #56657d;
 }
 
 /* ----------------------------------------------------------
    2. RESET & BASE
-   On repart d'une base propre pour éviter les surprises
    ---------------------------------------------------------- */
 *,
 *::before,
 *::after {
-  /* ✅ box-sizing : évite que padding/border débordent du conteneur */
   box-sizing: border-box;
   margin:  0;
   padding: 0;
 }
 
 html {
-  /* ✅ scroll-behavior : le défilement devient doux (smooth scroll CSS) */
   scroll-behavior: smooth;
-  /* ✅ scroll-padding-top : compense la navbar fixe lors des ancres */
-  scroll-padding-top: 70px;
+  scroll-padding-top: var(--navbar-h);
+}
+
+/* Respect des préférences "réduire les animations" */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 body {
@@ -57,21 +83,155 @@ body {
   background-color: var(--bleu-fonce);
   color:            var(--texte-clair);
   line-height:      1.7;
-  /* ✅ overflow-x:hidden évite le scroll horizontal indésirable */
   overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Contraste de sélection */
+::selection {
+  background: var(--bleu-accent);
+  color: white;
+}
+
+/* ✅ Accessibilité : focus clavier toujours visible */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--bleu-clair);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Lien d'évitement (accessibilité clavier) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--bleu-accent);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 0 0 8px 0;
+  z-index: 10000;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 0;
 }
 
 /* ----------------------------------------------------------
-   3. BARRE DE NAVIGATION
+   3. LOADER DE CHARGEMENT
+   ---------------------------------------------------------- */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bleu-fonce);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#loader.loader-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-logo {
+  font-family: var(--font-titre);
+  font-size: 2rem;
+  color: var(--bleu-accent);
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  animation: pulseLogo 1.4s ease-in-out infinite;
+}
+
+.loader-bar {
+  width: 180px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(13,110,253,0.15);
+  overflow: hidden;
+}
+
+.loader-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--bleu-accent), var(--bleu-clair));
+  border-radius: 99px;
+  animation: loaderFill 1.2s ease forwards;
+}
+
+@keyframes loaderFill {
+  to { width: 100%; }
+}
+
+@keyframes pulseLogo {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.6; transform: scale(0.96); }
+}
+
+/* ----------------------------------------------------------
+   4. CURSEUR PERSONNALISÉ (desktop uniquement)
+   ---------------------------------------------------------- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--bleu-accent);
+}
+
+.cursor-ring {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--bleu-clair);
+  transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  opacity: 0.6;
+}
+
+.cursor-ring.ring-active {
+  width: 46px;
+  height: 46px;
+  border-color: var(--bleu-accent);
+  opacity: 0.9;
+}
+
+/* On masque le curseur custom sur tactile / petits écrans */
+@media (hover: none), (pointer: coarse), (max-width: 768px) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+
+/* ----------------------------------------------------------
+   5. BARRE DE NAVIGATION
    ---------------------------------------------------------- */
 #navbar {
-  position:   fixed;          /* Reste en haut pendant le scroll */
+  position:   fixed;
   top:        0;
   left:       0;
   width:      100%;
-  z-index:    1000;           /* Toujours au-dessus de tout */
+  z-index:    1000;
   background: rgba(5, 14, 31, 0.85);
-  /* ✅ backdrop-filter : effet "verre" flou derrière la navbar */
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter:         blur(12px);
   border-bottom: 1px solid rgba(13, 110, 253, 0.2);
@@ -79,22 +239,25 @@ body {
   align-items:     center;
   justify-content: space-between;
   padding:         0 40px;
-  height:          65px;
-  transition:      background var(--transition);
+  height:          var(--navbar-h);
+  transition:      background var(--transition), border-color var(--transition);
 }
 
-/* Logo "BK" dans la navbar */
+html[data-theme="light"] #navbar {
+  background: rgba(255, 255, 255, 0.85);
+}
+
 .nav-logo {
   font-family: var(--font-titre);
   font-size:   1.4rem;
   color:       var(--bleu-accent);
   font-weight: 700;
   letter-spacing: 2px;
+  text-decoration: none;
 }
 
-/* Liste des liens de navigation */
 .nav-links {
-  list-style: none;   /* ✅ On enlève les puces */
+  list-style: none;
   display:    flex;
   gap:        32px;
 }
@@ -110,7 +273,6 @@ body {
   padding-bottom:  4px;
 }
 
-/* Ligne animée sous le lien au survol */
 .nav-link::after {
   content:    '';
   position:   absolute;
@@ -132,7 +294,45 @@ body {
   width: 100%;
 }
 
-/* Bouton hamburger (visible sur mobile uniquement) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Bouton thème clair/sombre */
+.theme-toggle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(13,110,253,0.3);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.theme-toggle:hover {
+  border-color: var(--bleu-accent);
+  transform: rotate(15deg);
+}
+
+.theme-icon {
+  position: absolute;
+  font-size: 1.1rem;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.icon-moon  { opacity: 1; transform: scale(1) rotate(0deg); }
+.icon-sun   { opacity: 0; transform: scale(0.4) rotate(90deg); }
+
+html[data-theme="light"] .icon-moon { opacity: 0; transform: scale(0.4) rotate(-90deg); }
+html[data-theme="light"] .icon-sun  { opacity: 1; transform: scale(1) rotate(0deg); }
+
+/* Bouton hamburger (mobile uniquement) */
 .hamburger {
   display:        none;
   flex-direction: column;
@@ -152,11 +352,21 @@ body {
   transition: var(--transition);
 }
 
+.hamburger[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+.hamburger[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 /* ----------------------------------------------------------
-   4. EN-TÊTE (HERO)
+   6. EN-TÊTE (HERO)
    ---------------------------------------------------------- */
 header#accueil {
-  min-height:      100vh;     /* Prend toute la hauteur de l'écran */
+  min-height:      100vh;
   display:         flex;
   align-items:     center;
   justify-content: center;
@@ -166,49 +376,59 @@ header#accueil {
   overflow:        hidden;
 }
 
-/* Fond animé avec dégradé */
 .hero-bg {
   position:   absolute;
-  inset:      0;              /* = top:0; right:0; bottom:0; left:0 */
-  background: 
+  inset:      0;
+  background:
     radial-gradient(ellipse at 20% 50%, rgba(13,110,253,0.15) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(77,163,255,0.1) 0%, transparent 40%),
     var(--bleu-fonce);
   z-index: 0;
+  transition: background-color 0.4s ease;
 }
 
-/* Le contenu du hero est AU-DESSUS du fond */
+/* Canvas des particules, en arrière-plan derrière le contenu mais devant hero-bg */
+#particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .hero-content {
   position:  relative;
   z-index:   1;
   max-width: 600px;
 }
 
-/* Photo de profil */
 .profile {
   width:         140px;
   height:        140px;
-  border-radius: 50%;           /* Rend l'image ronde */
-  object-fit:    cover;         /* L'image remplit bien le cercle */
+  border-radius: 50%;
+  object-fit:    cover;
   border:        3px solid var(--bleu-accent);
-  /* ✅ box-shadow : lueur bleue autour de la photo */
   box-shadow:    0 0 0 6px var(--bleu-glow), 0 20px 40px rgba(0,0,0,0.4);
   margin-bottom: 24px;
-  /* Animation d'entrée */
   animation: fadeDown 0.8s ease both;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* Titre principal (h1) */
+/* Effet de zoom doux sur la photo au survol */
+.profile:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 8px var(--bleu-glow), 0 24px 50px rgba(0,0,0,0.45);
+}
+
 header h1 {
   font-family: var(--font-titre);
-  font-size:   clamp(1.8rem, 5vw, 3rem); /* ✅ clamp = taille fluide selon l'écran */
+  font-size:   clamp(1.8rem, 5vw, 3rem);
   font-weight: 700;
   color:       var(--texte-clair);
   margin-bottom: 16px;
-  min-height:  1.2em;           /* Espace réservé pour l'effet typing */
+  min-height:  1.2em;
 }
 
-/* Curseur clignotant pour l'effet typing */
 .cursor {
   animation: blink 0.8s step-end infinite;
   color:     var(--bleu-accent);
@@ -218,7 +438,6 @@ header h1 {
   50% { opacity: 0; }
 }
 
-/* Sous-titre du hero */
 .hero-subtitle {
   color:         var(--texte-gris);
   font-size:     1.1rem;
@@ -226,8 +445,46 @@ header h1 {
   animation:     fadeUp 1s ease 0.5s both;
 }
 
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp 1s ease 0.7s both;
+}
+
+/* Indicateur de scroll en bas du hero */
+.scroll-indicator {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 42px;
+  border: 2px solid rgba(77,163,255,0.4);
+  border-radius: 20px;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.scroll-indicator span {
+  width: 4px;
+  height: 8px;
+  background: var(--bleu-clair);
+  border-radius: 99px;
+  animation: scrollDot 1.6s ease infinite;
+}
+
+@keyframes scrollDot {
+  0%   { transform: translateY(0);   opacity: 1; }
+  70%  { transform: translateY(14px); opacity: 0; }
+  100% { transform: translateY(0);   opacity: 0; }
+}
+
 /* ----------------------------------------------------------
-   5. BOUTONS
+   7. BOUTONS
    ---------------------------------------------------------- */
 .btn {
   display:         inline-block;
@@ -243,16 +500,11 @@ header h1 {
   letter-spacing:  0.3px;
 }
 
-/* Bouton principal (bleu plein) */
 .btn-primary {
-  background: rgba(0, 0, 0, 0.868);
-  color:     rgba(0, 0, 255, 0.806);
+  background:   var(--bleu-accent);
+  color:        white;
   border-color: var(--bleu-accent);
   box-shadow:   0 4px 20px var(--bleu-glow);
-}
-.btn-primary {
-  background: #0d6efd;
-  color: white;
 }
 
 .btn-primary:hover {
@@ -262,7 +514,12 @@ header h1 {
   box-shadow:  0 8px 30px var(--bleu-glow);
 }
 
-/* Bouton secondaire (contour) */
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .btn-outline {
   background:   transparent;
   color:        var(--bleu-accent);
@@ -275,7 +532,6 @@ header h1 {
   transform:  translateY(-2px);
 }
 
-/* Petit bouton pour les projets */
 .btn-small {
   padding:   8px 18px;
   font-size: 0.85rem;
@@ -290,21 +546,18 @@ header h1 {
 }
 
 /* ----------------------------------------------------------
-   6. SECTIONS (structure commune)
+   8. SECTIONS (structure commune)
    ---------------------------------------------------------- */
 .section {
   padding:   var(--section-pad);
-  /* ✅ On ajoute padding-top pour compenser la navbar fixe */
   padding-top: 100px;
 }
 
-/* Conteneur centré avec largeur max */
 .section-inner {
   max-width: 960px;
   margin:    0 auto;
 }
 
-/* Titre de section */
 .section-title {
   font-family:   var(--font-titre);
   font-size:     clamp(1.5rem, 4vw, 2.2rem);
@@ -314,7 +567,6 @@ header h1 {
   display:       inline-block;
 }
 
-/* Ligne décorative sous le titre */
 .section-title::after {
   content:    '';
   position:   absolute;
@@ -327,11 +579,10 @@ header h1 {
 }
 
 /* ----------------------------------------------------------
-   7. SECTION À PROPOS
+   9. SECTION À PROPOS
    ---------------------------------------------------------- */
 .about-grid {
   display:   grid;
-  /* 2 colonnes sur grand écran, 1 colonne sur petit écran */
   grid-template-columns: 1fr 1fr;
   gap:       48px;
   align-items: center;
@@ -351,7 +602,6 @@ header h1 {
   margin-top: 8px;
 }
 
-/* Cartes de statistiques */
 .about-stats {
   display: flex;
   flex-direction: column;
@@ -366,7 +616,7 @@ header h1 {
   display:       flex;
   align-items:   center;
   gap:           16px;
-  transition:    border-color var(--transition), transform var(--transition);
+  transition:    border-color var(--transition), transform var(--transition), background-color var(--transition);
 }
 
 .stat-card:hover {
@@ -380,6 +630,7 @@ header h1 {
   color:       var(--bleu-accent);
   font-weight: 700;
   line-height: 1;
+  min-width: 3ch;
 }
 
 .stat-label {
@@ -388,30 +639,27 @@ header h1 {
 }
 
 /* ----------------------------------------------------------
-   8. SECTION COMPÉTENCES
+   10. SECTION COMPÉTENCES
    ---------------------------------------------------------- */
 .skills-grid {
   display:               grid;
-  /* Colonnes automatiques, min 240px chacune */
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap:                   24px;
 }
 
-/* Carte de compétence */
 .card {
   background:    var(--bleu-moyen);
   border:        1px solid rgba(13,110,253,0.15);
   border-radius: var(--radius);
   padding:       28px 24px;
-  /* ✅ transition sur plusieurs propriétés à la fois */
   transition:    transform var(--transition),
                  border-color var(--transition),
-                 box-shadow var(--transition);
+                 box-shadow var(--transition),
+                 background-color var(--transition);
   position:      relative;
   overflow:      hidden;
 }
 
-/* Lueur au survol d'une carte */
 .card::before {
   content:    '';
   position:   absolute;
@@ -425,7 +673,7 @@ header h1 {
 }
 
 .card:hover {
-  transform:    translateY(-6px);
+  transform:    translateY(-8px);
   border-color: var(--bleu-accent);
   box-shadow:   0 12px 40px var(--bleu-glow);
 }
@@ -434,10 +682,15 @@ header h1 {
   opacity: 1;
 }
 
-/* Icône de la carte */
 .card-icon {
   font-size:     2rem;
   margin-bottom: 12px;
+  display: inline-block;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card-icon {
+  transform: scale(1.2) rotate(-6deg);
 }
 
 .card h3 {
@@ -450,11 +703,11 @@ header h1 {
 .card p {
   color:     var(--texte-gris);
   font-size: 0.9rem;
+  margin-bottom: 12px;
 }
 
-/* Barre de progression de compétence */
 .skill-bar {
-  background:    rgba(255,255,255,0.08);
+  background:    rgba(120,140,170,0.18);
   border-radius: 99px;
   height:        6px;
   margin-top:    16px;
@@ -463,19 +716,32 @@ header h1 {
 
 .skill-fill {
   height:        100%;
-  width:         0%;              /* Démarre à 0, animé par JS */
+  width:         0%;
   background:    linear-gradient(90deg, var(--bleu-accent), var(--bleu-clair));
   border-radius: 99px;
   transition:    width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Quand la carte est visible, on déclenche la barre */
 .card.show .skill-fill {
   width: var(--w);
 }
 
+.skill-percent {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--bleu-clair);
+  font-family: var(--font-titre);
+  opacity: 0;
+  transition: opacity 0.6s ease 0.6s;
+}
+
+.card.show .skill-percent {
+  opacity: 1;
+}
+
 /* ----------------------------------------------------------
-   9. SECTION PROJETS
+   11. SECTION PROJETS
    ---------------------------------------------------------- */
 .projects-grid {
   display:               grid;
@@ -487,17 +753,44 @@ header h1 {
   background:    var(--bleu-moyen);
   border:        1px solid rgba(13,110,253,0.15);
   border-radius: var(--radius);
-  padding:       32px 28px;
+  padding:       0 0 28px;
+  overflow: hidden;
   transition:    transform var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
 
 .project-card:hover {
-  transform:    translateY(-6px);
+  transform:    translateY(-8px);
   border-color: var(--bleu-accent);
   box-shadow:   0 16px 40px var(--bleu-glow);
 }
 
-/* Étiquette de technologie */
+.project-img-wrap {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: var(--bleu-clair-bg);
+}
+
+.project-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-img {
+  transform: scale(1.08);
+}
+
+.project-card .project-tag,
+.project-card h3,
+.project-card p,
+.project-card .btn {
+  margin-left: 28px;
+  margin-right: 28px;
+}
+
 .project-tag {
   display:       inline-block;
   background:    rgba(13,110,253,0.15);
@@ -507,6 +800,7 @@ header h1 {
   padding:       4px 14px;
   font-size:     0.78rem;
   font-weight:   600;
+  margin-top: 20px;
   margin-bottom: 16px;
   letter-spacing: 0.5px;
 }
@@ -516,6 +810,7 @@ header h1 {
   font-size:     1.1rem;
   color:         var(--texte-clair);
   margin-bottom: 12px;
+  display: block;
 }
 
 .project-card p {
@@ -523,10 +818,117 @@ header h1 {
   font-size:     0.92rem;
   margin-bottom: 20px;
   line-height:   1.6;
+  display: block;
+}
+
+.project-card .btn {
+  display: inline-block;
 }
 
 /* ----------------------------------------------------------
-   10. SECTION CONTACT
+   12. SECTION CV
+   ---------------------------------------------------------- */
+.cv-card {
+  background:    var(--bleu-moyen);
+  padding:       36px;
+  border-radius: 15px;
+  box-shadow:    0 0 15px rgba(0,0,0,0.25);
+  border: 1px solid rgba(13,110,253,0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, background-color var(--transition);
+}
+
+.cv-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(13,110,253,0.4);
+}
+
+.cv-card h3 {
+  font-family: var(--font-titre);
+  color: var(--bleu-clair);
+  margin-bottom: 6px;
+  font-size: 1.3rem;
+}
+
+.cv-role {
+  color: var(--texte-gris);
+  margin-bottom: 18px;
+}
+
+.cv-contact {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+  color: var(--texte-gris);
+  font-size: 0.92rem;
+}
+
+.cv-contact a {
+  color: var(--bleu-clair);
+  text-decoration: none;
+}
+
+.cv-contact a:hover {
+  text-decoration: underline;
+}
+
+.cv-card h4 {
+  color: var(--bleu-clair);
+  margin-top: 22px;
+  margin-bottom: 10px;
+  font-family: var(--font-titre);
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.cv-card p {
+  color: var(--texte-gris);
+  font-size: 0.95rem;
+}
+
+.cv-card ul {
+  padding-left: 20px;
+  color: var(--texte-gris);
+}
+
+.cv-card ul li {
+  margin-bottom: 8px;
+  transition: transform 0.3s ease;
+}
+
+.cv-card ul li:hover {
+  transform: translateX(8px);
+  color: var(--texte-clair);
+}
+
+.cv-tags {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cv-tags li {
+  background: rgba(13,110,253,0.12);
+  border: 1px solid rgba(13,110,253,0.3);
+  color: var(--bleu-clair);
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: 0.82rem;
+}
+
+.cv-tags li:hover {
+  transform: none;
+}
+
+.cv-card .btn {
+  margin-top: 24px;
+}
+
+/* ----------------------------------------------------------
+   13. SECTION CONTACT
    ---------------------------------------------------------- */
 .contact-intro {
   color:         var(--texte-gris);
@@ -538,7 +940,6 @@ header h1 {
   max-width: 560px;
 }
 
-/* Groupe label + input */
 .form-group {
   display:        flex;
   flex-direction: column;
@@ -552,20 +953,19 @@ header h1 {
   margin-bottom: 8px;
 }
 
-/* ✅ CORRECTION : width: 100% (ton code avait width: 100px — une erreur !) */
 input,
 textarea {
   width:         100%;
   padding:       12px 16px;
-  background:    var(--bleu-moyen);
-  border:        1px solid rgba(13,110,253,0.2);
+  background:    var(--bleu-clair-bg);
+  border:        1px solid rgba(13,110,253,0.25);
   border-radius: 8px;
   color:         var(--texte-clair);
   font-family:   var(--font-corps);
   font-size:     0.95rem;
-  transition:    border-color var(--transition), box-shadow var(--transition);
+  transition:    border-color var(--transition), box-shadow var(--transition), background-color var(--transition);
   outline:       none;
-  resize:        vertical;    /* Seul le redimensionnement vertical est autorisé */
+  resize:        vertical;
 }
 
 input:focus,
@@ -574,35 +974,51 @@ textarea:focus {
   box-shadow:   0 0 0 3px var(--bleu-glow);
 }
 
-/* Champ invalide (après validation JS) */
 input.invalid,
 textarea.invalid {
-  border-color: #e05252;
-  box-shadow:   0 0 0 3px rgba(224, 82, 82, 0.2);
+  border-color: var(--rouge-erreur);
+  box-shadow:   0 0 0 3px rgba(255, 122, 122, 0.18);
 }
 
-/* Message d'erreur de validation */
+input.valid,
+textarea.valid {
+  border-color: var(--vert-succes);
+}
+
 .error-msg {
-  color:     #e05252;
+  color:     var(--rouge-erreur);
   font-size: 0.82rem;
   margin-top: 6px;
   min-height: 1em;
 }
 
-/* Message de succès après envoi */
 .success-msg {
   margin-top:    16px;
   padding:       14px 18px;
   background:    rgba(13,200,100,0.1);
   border:        1px solid rgba(13,200,100,0.3);
   border-radius: 8px;
-  color:         #4dca88;
+  color:         var(--vert-succes);
   font-size:     0.95rem;
-  display:       none;          /* Caché par défaut, affiché par JS */
+  display:       none;
+}
+
+.success-msg.show-msg {
+  display: block;
+  animation: fadeUp 0.4s ease both;
+}
+
+/* Champ honeypot anti-spam : invisible pour les humains */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
 /* ----------------------------------------------------------
-   11. PIED DE PAGE
+   14. PIED DE PAGE
    ---------------------------------------------------------- */
 footer {
   background:    var(--bleu-moyen);
@@ -620,7 +1036,7 @@ footer {
 }
 
 /* ----------------------------------------------------------
-   12. BOUTON "RETOUR EN HAUT"
+   15. BOUTON "RETOUR EN HAUT"
    ---------------------------------------------------------- */
 #btn-top {
   position:   fixed;
@@ -635,7 +1051,6 @@ footer {
   border:     none;
   font-size:  1.2rem;
   cursor:     pointer;
-  /* Caché au départ : opacity 0 ET pointer-events none */
   opacity:    0;
   pointer-events: none;
   transform:  translateY(20px);
@@ -643,7 +1058,6 @@ footer {
   box-shadow: 0 4px 20px var(--bleu-glow);
 }
 
-/* Classe ajoutée par JS quand on scroll assez bas */
 #btn-top.visible {
   opacity:        1;
   pointer-events: auto;
@@ -656,23 +1070,24 @@ footer {
 }
 
 /* ----------------------------------------------------------
-   13. ANIMATIONS D'APPARITION
+   16. ANIMATIONS D'APPARITION AU SCROLL (reveal)
+   data-reveal="up" (défaut) | "left" | "right"
    ---------------------------------------------------------- */
-
-/* État initial : invisible et décalé vers le bas */
-.hidden {
+.reveal {
   opacity:   0;
-  transform: translateY(40px);
   transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: translateY(40px);
 }
 
-/* État final : visible et à sa position normale */
-.show {
+.reveal[data-reveal="left"]  { transform: translateX(-50px); }
+.reveal[data-reveal="right"] { transform: translateX(50px); }
+.reveal[data-reveal="up"]    { transform: translateY(40px); }
+
+.reveal.show {
   opacity:   1;
-  transform: translateY(0);
+  transform: translate(0, 0);
 }
 
-/* Animation délayée selon l'attribut data-delay */
 [data-delay="100"] { transition-delay: 100ms; }
 [data-delay="150"] { transition-delay: 150ms; }
 [data-delay="200"] { transition-delay: 200ms; }
@@ -680,7 +1095,6 @@ footer {
 [data-delay="400"] { transition-delay: 400ms; }
 [data-delay="500"] { transition-delay: 500ms; }
 
-/* Animations CSS keyframes */
 @keyframes fadeDown {
   from { opacity: 0; transform: translateY(-30px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -692,19 +1106,12 @@ footer {
 }
 
 /* ----------------------------------------------------------
-   14. RESPONSIVE DESIGN (Téléphones & Tablettes)
-   
-   Principe : on utilise des "media queries"
-   @media = "si l'écran est plus petit que X pixels, alors..."
+   17. RESPONSIVE DESIGN
    ---------------------------------------------------------- */
-
-/* Tablette (max 768px) */
 @media (max-width: 768px) {
-
-  /* Navigation : on cache les liens, on affiche le hamburger */
   .nav-links {
     position:   fixed;
-    top:        65px;
+    top:        var(--navbar-h);
     left:       0;
     width:      100%;
     background: var(--bleu-moyen);
@@ -712,15 +1119,13 @@ footer {
     align-items:    center;
     padding:        24px 0;
     gap:            20px;
-    /* Caché par défaut sur mobile */
-    transform:  translateY(-100%);
+    transform:  translateY(-110%);
     opacity:    0;
     pointer-events: none;
     transition: all var(--transition);
     border-bottom: 1px solid rgba(13,110,253,0.2);
   }
 
-  /* Classe ajoutée par JS quand on clique sur hamburger */
   .nav-links.open {
     transform:      translateY(0);
     opacity:        1;
@@ -731,13 +1136,11 @@ footer {
     display: flex;
   }
 
-  /* Grille À propos : 1 colonne sur mobile */
   .about-grid {
     grid-template-columns: 1fr;
     gap: 32px;
   }
 
-  /* Bouton retour en haut : plus petit sur mobile */
   #btn-top {
     bottom: 20px;
     right:  20px;
@@ -750,7 +1153,6 @@ footer {
   }
 }
 
-/* Grand mobile (max 480px) */
 @media (max-width: 480px) {
   #navbar {
     padding: 0 20px;
@@ -775,107 +1177,14 @@ footer {
     text-align: center;
     gap: 8px;
   }
-}
-.cv-card{
-    background: #0a1930;
 
-   .cv-card{
-    background: #0a1930;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
 
-    transition: all 0.4s ease;
-}
-
-.cv-card:hover{
-    transform: translateY(-8px);
-    box-shadow: 0 10px 25px rgba(13,110,253,0.4);
-}
-   .cv-card h4{
-    color:#4da3ff;
-    margin-top:20px;
-    margin-bottom:10px;
-    transition: color 0.3s ease;
-}
-
-.cv-card h4:hover{
-    color:white;
-}
-   .cv-card ul li{
-    margin-bottom:8px;
-    transition: transform 0.3s ease;
-}
-
-.cv-card ul li:hover{
-    transform: translateX(10px);
-}
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.3);
-}
-
-.cv-card h3{
-    color:#4da3ff;
-    margin-bottom:15px;
-}
-
-.cv-card h4{
-    color:#4da3ff;
-    margin-top:20px;
-    margin-bottom:10px;
-}
-
-.cv-card ul{
-    padding-left:20px;
-}
-
-/* Animation apparition */
-
-.hidden{
-    opacity:0;
-    transform:translateY(50px);
-    transition:all .8s ease;
-}
-
-.show{
-    opacity:1;
-    transform:translateY(0);
-}
-
-/* Hover cartes */
-
-.card:hover,
-.project-card:hover{
-    transform:translateY(-10px);
-    transition:.4s;
-}
-
-/* Barres compétences */
-
-.skill-fill{
-    width:0;
-    height:100%;
-    transition:width 2s ease;
-}
-
-/* Bouton retour haut */
-
-#btn-top{
-    display:none;
-}
-
-/* Menu mobile */
-
-@media(max-width:768px){
-
-    .nav-links{
-        display:none;
-        flex-direction:column;
-    }
-
-    .nav-links.active{
-        display:flex;
-    }
-
+  .hero-actions .btn {
+    width: 100%;
+    text-align: center;
+  }
 }
