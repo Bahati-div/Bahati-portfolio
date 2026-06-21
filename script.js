@@ -85,9 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // On appelle la fonction
   afficherBienvenue();
-   
-
-  effetTyping();
 
 
   /* ==========================================================
