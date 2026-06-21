@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bahati-div.github.io/Bahati-portfolio/sitemap.xml
