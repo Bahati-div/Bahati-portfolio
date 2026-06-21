@@ -1,118 +1,358 @@
-
 /* ============================================================
    SCRIPT.JS — Portfolio de Bahati Kamina
-   
-   Ce fichier ajoute TOUTE l'interactivité du portfolio.
-   Chaque fonctionnalité est clairement séparée et expliquée.
+   Toute l'interactivité du site, organisée en fonctions claires.
+   Chaque fonctionnalité est indépendante et commentée.
    ============================================================ */
 
-/* ----------------------------------------------------------
-   🔒 RÈGLE D'OR : Tout notre code est dans cette fonction.
-   
-   "DOMContentLoaded" = "attendre que la page soit entièrement
-   chargée AVANT d'exécuter le code JavaScript".
-   
-   Sans ça, JS essaierait de trouver des éléments HTML qui
-   n'existent pas encore → erreurs !
-   ---------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', function () {
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 1 : ALERTE DE BIENVENUE
-     
-     On affiche un message de bienvenue la PREMIÈRE FOIS que
-     l'utilisateur visite le site.
-     
-     sessionStorage = stockage temporaire (effacé à la fermeture
-     de l'onglet). Parfait pour "une fois par visite".
+     ✅ 1. LOADER AU CHARGEMENT
      ========================================================== */
-  function afficherBienvenue() {
-    // On vérifie si l'utilisateur a déjà vu le message cette session
-    const dejaVisite = sessionStorage.getItem('bienvenue_affiche');
+  function gererLoader() {
+    const loader = document.getElementById('loader');
+    if (!loader) return;
 
-    if (!dejaVisite) {
-      // Petite attente (800ms) avant d'afficher, pour laisser la page charger
+    window.addEventListener('load', function () {
       setTimeout(function () {
-        // On marque que l'utilisateur a vu le message
-        sessionStorage.setItem('bienvenue_affiche', 'oui');
+        loader.classList.add('loader-hidden');
+      }, 400);
+    });
 
-        // On crée un div stylisé (plus joli qu'un alert() basique)
-        const toast = document.createElement('div');
-        toast.innerHTML = '👋 Bienvenue sur mon portfolio !';
-
-        // Style en ligne (directement dans JS pour ce toast)
-        Object.assign(toast.style, {
-          position:       'fixed',
-          bottom:         '24px',
-          left:           '24px',
-          background:     '#0d6efd',
-          color:          'white',
-          padding:        '14px 22px',
-          borderRadius:   '10px',
-          fontFamily:     "'DM Sans', sans-serif",
-          fontWeight:     '500',
-          fontSize:       '0.95rem',
-          zIndex:         '9999',
-          boxShadow:      '0 8px 30px rgba(13,110,253,0.4)',
-          opacity:        '0',
-          transform:      'translateY(20px)',
-          transition:     'all 0.4s ease',
-        });
-
-        document.body.appendChild(toast);
-
-        // Déclencher l'animation d'apparition
-        // (on utilise requestAnimationFrame pour forcer le navigateur à "voir" le style initial)
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            toast.style.opacity   = '1';
-            toast.style.transform = 'translateY(0)';
-          });
-        });
-
-        // Le message disparaît automatiquement après 4 secondes
-        setTimeout(function () {
-          toast.style.opacity   = '0';
-          toast.style.transform = 'translateY(20px)';
-
-          // On supprime le div du HTML après la disparition (0.4s)
-          setTimeout(() => toast.remove(), 400);
-        }, 4000);
-
-      }, 800);
-    }
+    // Sécurité : si "load" ne se déclenche jamais (rare), on masque après 3s max
+    setTimeout(function () {
+      loader.classList.add('loader-hidden');
+    }, 3000);
   }
 
-  // On appelle la fonction
-  afficherBienvenue();
+  gererLoader();
 
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 3 : BOUTON RETOUR EN HAUT
-     
-     Le bouton "↑" apparaît quand on scroll vers le bas,
-     et remonte en haut de la page au clic.
+     ✅ 2. MODE SOMBRE / CLAIR
+     localStorage retient le choix de l'utilisateur entre visites.
+     ========================================================== */
+  function gererTheme() {
+    const bouton = document.getElementById('theme-toggle');
+    const racine = document.documentElement; // <html>
+    if (!bouton) return;
+
+    const THEME_KEY = 'portfolio-theme';
+
+    // Récupérer le thème déjà choisi, sinon utiliser la préférence système
+    let themeActuel = localStorage.getItem(THEME_KEY);
+    if (!themeActuel) {
+      const preferesClair = window.matchMedia('(prefers-color-scheme: light)').matches;
+      themeActuel = preferesClair ? 'light' : 'dark';
+    }
+
+    appliquerTheme(themeActuel);
+
+    function appliquerTheme(theme) {
+      if (theme === 'light') {
+        racine.setAttribute('data-theme', 'light');
+        bouton.setAttribute('aria-pressed', 'true');
+      } else {
+        racine.removeAttribute('data-theme');
+        bouton.setAttribute('aria-pressed', 'false');
+      }
+      localStorage.setItem(THEME_KEY, theme);
+    }
+
+    bouton.addEventListener('click', function () {
+      const themeSuivant = racine.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      appliquerTheme(themeSuivant);
+    });
+  }
+
+  gererTheme();
+
+
+  /* ==========================================================
+     ✅ 3. CURSEUR PERSONNALISÉ (desktop uniquement)
+     ========================================================== */
+  function gererCurseur() {
+    const estTactile = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (estTactile) return;
+
+    const point = document.querySelector('.cursor-dot');
+    const anneau = document.querySelector('.cursor-ring');
+    if (!point || !anneau) return;
+
+    let anneauX = 0, anneauY = 0;
+    let cibleX = 0, cibleY = 0;
+
+    document.addEventListener('mousemove', function (e) {
+      cibleX = e.clientX;
+      cibleY = e.clientY;
+
+      point.style.left = cibleX + 'px';
+      point.style.top  = cibleY + 'px';
+    });
+
+    // L'anneau suit avec un léger retard (effet fluide)
+    function animerAnneau() {
+      anneauX += (cibleX - anneauX) * 0.18;
+      anneauY += (cibleY - anneauY) * 0.18;
+      anneau.style.left = anneauX + 'px';
+      anneau.style.top  = anneauY + 'px';
+      requestAnimationFrame(animerAnneau);
+    }
+    animerAnneau();
+
+    // L'anneau grossit sur les éléments cliquables
+    const elementsInteractifs = document.querySelectorAll('a, button, input, textarea, .card, .project-card');
+    elementsInteractifs.forEach(function (el) {
+      el.addEventListener('mouseenter', () => anneau.classList.add('ring-active'));
+      el.addEventListener('mouseleave', () => anneau.classList.remove('ring-active'));
+    });
+  }
+
+  gererCurseur();
+
+
+  /* ==========================================================
+     ✅ 4. EFFET TYPING SUR LE TITRE D'ACCUEIL
+     ========================================================== */
+  function effetTyping() {
+    const cible = document.getElementById('typing-text');
+    if (!cible) return;
+
+    const phrases = ['Bahati Kamina', 'Développeur Web Junior'];
+    const reduireAnimations = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduireAnimations) {
+      cible.textContent = phrases[0];
+      return;
+    }
+
+    let indexPhrase = 0;
+    let indexLettre = 0;
+    let enSuppression = false;
+
+    function etape() {
+      const phrase = phrases[indexPhrase];
+
+      if (!enSuppression) {
+        indexLettre++;
+        cible.textContent = phrase.slice(0, indexLettre);
+
+        if (indexLettre === phrase.length) {
+          enSuppression = true;
+          setTimeout(etape, 1800);
+          return;
+        }
+      } else {
+        indexLettre--;
+        cible.textContent = phrase.slice(0, indexLettre);
+
+        if (indexLettre === 0) {
+          enSuppression = false;
+          indexPhrase = (indexPhrase + 1) % phrases.length;
+        }
+      }
+
+      setTimeout(etape, enSuppression ? 45 : 90);
+    }
+
+    etape();
+  }
+
+  effetTyping();
+
+
+  /* ==========================================================
+     ✅ 5. PARTICULES EN ARRIÈRE-PLAN (canvas léger)
+     ========================================================== */
+  function gererParticules() {
+    const canvas = document.getElementById('particles');
+    if (!canvas) return;
+
+    const reduireAnimations = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduireAnimations) return;
+
+    const ctx = canvas.getContext('2d');
+    const header = canvas.closest('header');
+    let particules = [];
+    let largeur, hauteur;
+
+    function dimensionner() {
+      largeur  = canvas.width  = header.offsetWidth;
+      hauteur  = canvas.height = header.offsetHeight;
+    }
+
+    function creerParticules() {
+      const nombre = Math.min(60, Math.floor((largeur * hauteur) / 18000));
+      particules = [];
+      for (let i = 0; i < nombre; i++) {
+        particules.push({
+          x: Math.random() * largeur,
+          y: Math.random() * hauteur,
+          rayon: Math.random() * 1.6 + 0.6,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          opacite: Math.random() * 0.5 + 0.2,
+        });
+      }
+    }
+
+    function dessiner() {
+      ctx.clearRect(0, 0, largeur, hauteur);
+
+      particules.forEach(function (p) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Rebond sur les bords
+        if (p.x < 0 || p.x > largeur) p.vx *= -1;
+        if (p.y < 0 || p.y > hauteur) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.rayon, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(77, 163, 255, ${p.opacite})`;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(dessiner);
+    }
+
+    dimensionner();
+    creerParticules();
+    dessiner();
+
+    let redimensionTimeout;
+    window.addEventListener('resize', function () {
+      clearTimeout(redimensionTimeout);
+      redimensionTimeout = setTimeout(function () {
+        dimensionner();
+        creerParticules();
+      }, 200);
+    });
+  }
+
+  gererParticules();
+
+
+  /* ==========================================================
+     ✅ 6. ANIMATIONS D'APPARITION AU SCROLL (reveal)
+     Un seul IntersectionObserver pour toutes les apparitions
+     (fade-up / slide-left / slide-right gérés en CSS via
+     l'attribut data-reveal).
+     ========================================================== */
+  function activerRevealAuScroll() {
+    const elements = document.querySelectorAll('.reveal');
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    elements.forEach(el => observer.observe(el));
+  }
+
+  activerRevealAuScroll();
+
+
+  /* ==========================================================
+     ✅ 7. BARRES DE COMPÉTENCES ANIMÉES (cartes .card)
+     Quand une carte de compétence devient visible, sa classe
+     "show" déclenche en CSS l'animation de la largeur (--w).
+     ========================================================== */
+  function activerCartesCompetences() {
+    const cartes = document.querySelectorAll('.skills-grid .card');
+    if (!cartes.length) return;
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.25 });
+
+    cartes.forEach(carte => observer.observe(carte));
+  }
+
+  activerCartesCompetences();
+
+
+  /* ==========================================================
+     ✅ 8. COMPTEURS ANIMÉS (projets, compétences, motivation)
+     Chaque élément avec [data-counter] compte de 0 jusqu'à
+     data-target, une seule fois, quand il devient visible.
+     ========================================================== */
+  function activerCompteurs() {
+    const compteurs = document.querySelectorAll('[data-counter]');
+    if (!compteurs.length) return;
+
+    const reduireAnimations = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function lancerCompteur(element) {
+      const cible  = parseInt(element.getAttribute('data-target'), 10) || 0;
+      const suffixe = element.getAttribute('data-suffix') || '';
+
+      if (reduireAnimations) {
+        element.textContent = cible + suffixe;
+        return;
+      }
+
+      const duree = 1400; // ms
+      const debut = performance.now();
+
+      function etape(maintenant) {
+        const progres = Math.min((maintenant - debut) / duree, 1);
+        // easing simple pour un effet plus naturel
+        const valeur = Math.floor(progres * cible);
+        element.textContent = valeur + suffixe;
+
+        if (progres < 1) {
+          requestAnimationFrame(etape);
+        } else {
+          element.textContent = cible + suffixe;
+        }
+      }
+
+      requestAnimationFrame(etape);
+    }
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          lancerCompteur(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    compteurs.forEach(c => observer.observe(c));
+  }
+
+  activerCompteurs();
+
+
+  /* ==========================================================
+     ✅ 9. BOUTON RETOUR EN HAUT
      ========================================================== */
   function gererBoutonHaut() {
     const bouton = document.getElementById('btn-top');
     if (!bouton) return;
 
-    // Écouter le scroll de la fenêtre
     window.addEventListener('scroll', function () {
-      // Si on est à plus de 400px du haut de la page...
       if (window.scrollY > 400) {
-        bouton.classList.add('visible');    // ...on affiche le bouton
+        bouton.classList.add('visible');
       } else {
-        bouton.classList.remove('visible'); // ...sinon on le cache
+        bouton.classList.remove('visible');
       }
     });
 
-    // Au clic, remonter tout en haut
     bouton.addEventListener('click', function () {
-      window.scrollTo({
-        top:      0,
-        behavior: 'smooth' // Animation douce
-      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
@@ -120,13 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 4 : NAVIGATION ACTIVE PENDANT LE SCROLL
-     
-     Quand l'utilisateur scrolle vers une section, le lien
-     correspondant dans la navigation se surligne.
-     
-     On utilise IntersectionObserver (voir fonctionnalité 5)
-     pour détecter quelle section est visible.
+     ✅ 10. NAVIGATION ACTIVE PENDANT LE SCROLL
      ========================================================== */
   function gererNavigationActive() {
     const liens    = document.querySelectorAll('.nav-link');
@@ -134,26 +368,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (!sections.length || !liens.length) return;
 
-    // On observe chaque section
     const observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          // La section est visible : récupérer son id
           const idVisible = entry.target.id;
 
-          // Retirer "active" de tous les liens
           liens.forEach(lien => lien.classList.remove('active'));
 
-          // Ajouter "active" au lien correspondant
           const lienActif = document.querySelector('.nav-link[href="#' + idVisible + '"]');
-          if (lienActif) {
-            lienActif.classList.add('active');
-          }
+          if (lienActif) lienActif.classList.add('active');
         }
       });
     }, {
-      // rootMargin : la section est "active" quand elle entre dans la zone
-      // de -20% à -70% = environ le centre de l'écran
       rootMargin: '-20% 0px -70% 0px',
     });
 
@@ -164,84 +390,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 5 : SCROLL ANIMATION (Intersection Observer)
-     
-     C'est la fonctionnalité principale des animations.
-     
-     📖 Explication simple de l'Intersection Observer :
-     C'est comme un "détecteur" invisible. On lui dit :
-     "Surveille ces éléments. Quand l'un d'eux devient visible
-     à l'écran, préviens-moi !"
-     
-     Avantage vs l'ancienne méthode (window.addEventListener('scroll')):
-     - Plus performant (pas de calcul à chaque pixel de scroll)
-     - Plus simple à écrire
-     ========================================================== */
-  function activerScrollAnimations() {
-    // On sélectionne TOUS les éléments avec la classe "hidden"
-    const elementsAnimes = document.querySelectorAll('.hidden');
-
-    if (!elementsAnimes.length) return;
-
-    // Créer l'observateur
-    const observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        // entry.isIntersecting = true si l'élément est visible à l'écran
-        if (entry.isIntersecting) {
-          // Remplacer "hidden" par "show" → déclenche la transition CSS
-          entry.target.classList.add('show');
-
-          // ✅ BONNE PRATIQUE : Une fois animé, on arrête d'observer
-          // (inutile de continuer, économise de la mémoire)
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1, // 10% de l'élément doit être visible pour déclencher
-    });
-
-    // Observer chaque élément
-    elementsAnimes.forEach(function (element) {
-      observer.observe(element);
-    });
-  }
-
-  activerScrollAnimations();
-
-
-  /* ==========================================================
-     ✅ FONCTIONNALITÉ 6 : MENU HAMBURGER (Mobile)
-     
-     Sur mobile, on affiche un bouton ☰ qui ouvre/ferme
-     le menu de navigation.
+     ✅ 11. MENU HAMBURGER (mobile)
      ========================================================== */
   function gererMenuMobile() {
     const hamburger = document.getElementById('hamburger');
-    const navLinks  = document.querySelector('.nav-links');
+    const navLinks  = document.getElementById('nav-links');
 
     if (!hamburger || !navLinks) return;
 
-    // Clic sur le bouton hamburger
     hamburger.addEventListener('click', function () {
-      // toggle = "ajouter si absent, supprimer si présent"
       navLinks.classList.toggle('open');
-
-      // Mettre à jour l'attribut aria pour l'accessibilité
       const estOuvert = navLinks.classList.contains('open');
-      hamburger.setAttribute('aria-expanded', estOuvert);
+      hamburger.setAttribute('aria-expanded', String(estOuvert));
     });
 
-    // Fermer le menu quand on clique sur un lien
     navLinks.querySelectorAll('.nav-link').forEach(function (lien) {
       lien.addEventListener('click', function () {
         navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
       });
     });
 
-    // Fermer si on clique en dehors du menu
     document.addEventListener('click', function (e) {
       if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
         navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Fermer le menu avec la touche Échap (accessibilité clavier)
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+        navLinks.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        hamburger.focus();
       }
     });
   }
@@ -250,39 +432,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 7 : EFFETS DYNAMIQUES SUR LES CARTES
-     
-     Effet "parallax" 3D subtil quand on survole une carte.
-     La carte "suit" légèrement le curseur.
+     ✅ 12. EFFETS 3D SUR LES CARTES AU SURVOL (desktop)
      ========================================================== */
   function effetsCartes() {
+    const estTactile = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    if (estTactile) return;
+
     const cartes = document.querySelectorAll('.card, .project-card');
 
     cartes.forEach(function (carte) {
-
       carte.addEventListener('mousemove', function (e) {
-        // Récupérer la position de la carte
         const rect = carte.getBoundingClientRect();
-
-        // Calculer la position du curseur DANS la carte (de 0 à 1)
         const x = (e.clientX - rect.left) / rect.width;
         const y = (e.clientY - rect.top)  / rect.height;
 
-        // Calculer la rotation (max ±6 degrés)
-        const rotateX = (y - 0.5) * -6; // Haut/bas
-        const rotateY = (x - 0.5) *  6; // Gauche/droite
+        const rotateX = (y - 0.5) * -6;
+        const rotateY = (x - 0.5) *  6;
 
         carte.style.transform =
-          `translateY(-6px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+          `translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       });
 
-      // Réinitialiser quand le curseur quitte la carte
       carte.addEventListener('mouseleave', function () {
         carte.style.transform = '';
         carte.style.transition = 'transform 0.4s ease';
       });
 
-      // Retirer la transition pendant le mouvement (fluidité)
       carte.addEventListener('mouseenter', function () {
         carte.style.transition = 'none';
       });
@@ -291,169 +466,93 @@ document.addEventListener('DOMContentLoaded', function () {
 
   effetsCartes();
 
-   
-
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 8 : VALIDATION DU FORMULAIRE
-     
-     Avant d'envoyer le formulaire, on vérifie que :
-     - Le nom fait au moins 2 caractères
-     - L'email est valide (contient @)
-     - Le message fait au moins 10 caractères
-     
-     Si une erreur est détectée, on l'affiche sous le champ
-     concerné SANS recharger la page.
+     ✅ 13. VALIDATION DU FORMULAIRE DE CONTACT
+     - Validation en JS (et HTML natif en secours si JS désactivé)
+     - Messages d'erreur personnalisés sous chaque champ
+     - Anti-spam basique : honeypot + limite de fréquence d'envoi
+     - Préparé pour EmailJS (voir bloc EMAILJS plus bas)
      ========================================================== */
   function validerFormulaire() {
     const formulaire   = document.getElementById('contact-form');
     const champNom     = document.getElementById('name');
     const champEmail   = document.getElementById('email');
     const champMessage = document.getElementById('message');
+    const champPiege   = document.getElementById('website'); // honeypot
     const divSucces    = document.getElementById('form-success');
     const btnEnvoyer   = document.getElementById('submit-btn');
 
-    // Si le formulaire n'existe pas sur la page, on sort
     if (!formulaire) return;
 
-    /* -- Fonction utilitaire : afficher une erreur sous un champ -- */
     function afficherErreur(champId, message) {
       const erreur = document.getElementById(champId + '-error');
       const champ  = document.getElementById(champId);
       if (erreur) erreur.textContent = message;
-      if (champ)  champ.classList.add('invalid');
+      if (champ) {
+        champ.classList.add('invalid');
+        champ.classList.remove('valid');
+      }
     }
 
-    /* -- Fonction utilitaire : effacer une erreur -- */
     function effacerErreur(champId) {
       const erreur = document.getElementById(champId + '-error');
       const champ  = document.getElementById(champId);
       if (erreur) erreur.textContent = '';
-      if (champ)  champ.classList.remove('invalid');
+      if (champ) {
+        champ.classList.remove('invalid');
+        champ.classList.add('valid');
+      }
     }
 
-    /* -- Effacement en temps réel pendant la saisie -- */
+    /* -- Nettoyage basique des entrées : on retire les caractères
+          potentiellement dangereux pour un affichage HTML brut.
+          ⚠️ Cette protection est côté client uniquement : elle
+          améliore l'expérience utilisateur, mais le VRAI rempart
+          contre les injections doit toujours être côté serveur
+          (échappement HTML, requêtes préparées, etc.) si un jour
+          ce formulaire est branché à un backend. -- */
+    function nettoyerTexte(valeur) {
+      return valeur
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .trim();
+    }
+
     [champNom, champEmail, champMessage].forEach(function (champ) {
       if (!champ) return;
       champ.addEventListener('input', function () {
         effacerErreur(champ.id);
       });
     });
-     
-// ================================
-// ANIMATION AU SCROLL
-// ================================
 
-const hiddenElements = document.querySelectorAll(".hidden");
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-            entry.target.classList.add("show");
-        }
-
-    });
-});
-
-hiddenElements.forEach(el => {
-    observer.observe(el);
-});
-
-// ================================
-// BARRES DE COMPÉTENCES
-// ================================
-
-const skills = document.querySelectorAll(".skill-fill");
-
-const skillObserver = new IntersectionObserver((entries) => {
-
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-            const width = entry.target.style.getPropertyValue("--w");
-
-            entry.target.style.width = width;
-        }
-
-    });
-
-});
-
-skills.forEach(skill => {
-    skillObserver.observe(skill);
-});
-
-// ================================
-// BOUTON RETOUR EN HAUT
-// ================================
-
-const btnTop = document.getElementById("btn-top");
-
-window.addEventListener("scroll", () => {
-
-    if (window.scrollY > 300) {
-        btnTop.style.display = "block";
-    } else {
-        btnTop.style.display = "none";
-    }
-
-});
-
-btnTop.addEventListener("click", () => {
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-});
-
-// ================================
-// MENU MOBILE
-// ================================
-
-const hamburger = document.getElementById("hamburger");
-const navLinks = document.querySelector(".nav-links");
-
-hamburger.addEventListener("click", () => {
-
-    navLinks.classList.toggle("active");
-
-});
-
-// ================================
-// FORMULAIRE
-// ================================
-
-const form = document.getElementById("contact-form");
-
-form.addEventListener("submit", (e) => {
-
-    e.preventDefault();
-
-    document.getElementById("form-success").textContent =
-        "Votre message a été envoyé avec succès !";
-
-    form.reset();
-
-});
-
-    /* -- Soumission du formulaire -- */
     formulaire.addEventListener('submit', function (e) {
-      // ✅ preventDefault = empêcher le rechargement de la page
       e.preventDefault();
 
-      // Récupérer les valeurs (trim() enlève les espaces avant/après)
-      const nom     = champNom     ? champNom.value.trim()     : '';
-      const email   = champEmail   ? champEmail.value.trim()   : '';
-      const message = champMessage ? champMessage.value.trim() : '';
+      // ── Honeypot : si ce champ caché est rempli, c'est un bot ──
+      if (champPiege && champPiege.value.trim() !== '') {
+        // On ne donne aucun indice au bot : on affiche un faux succès
+        formulaire.reset();
+        return;
+      }
 
-      // Compteur d'erreurs
+      // ── Anti-spam simple : empêcher l'envoi répété en moins de 20s ──
+      const maintenant = Date.now();
+      const dernierEnvoi = Number(sessionStorage.getItem('dernier-envoi-form') || 0);
+      if (maintenant - dernierEnvoi < 20000) {
+        if (divSucces) {
+          divSucces.textContent = '⏳ Merci de patienter quelques secondes avant de renvoyer un message.';
+          divSucces.classList.add('show-msg');
+        }
+        return;
+      }
+
+      const nom     = champNom     ? nettoyerTexte(champNom.value)     : '';
+      const email   = champEmail   ? champEmail.value.trim()           : '';
+      const message = champMessage ? nettoyerTexte(champMessage.value) : '';
+
       let nbErreurs = 0;
 
-      // ── Validation du nom ──
       if (nom.length < 2) {
         afficherErreur('name', '⚠️ Le nom doit contenir au moins 2 caractères.');
         nbErreurs++;
@@ -461,8 +560,6 @@ form.addEventListener("submit", (e) => {
         effacerErreur('name');
       }
 
-      // ── Validation de l'email ──
-      // On teste avec une expression régulière (regex) simple
       const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       if (!emailValide) {
         afficherErreur('email', '⚠️ Veuillez entrer une adresse email valide.');
@@ -471,7 +568,6 @@ form.addEventListener("submit", (e) => {
         effacerErreur('email');
       }
 
-      // ── Validation du message ──
       if (message.length < 10) {
         afficherErreur('message', '⚠️ Le message doit contenir au moins 10 caractères.');
         nbErreurs++;
@@ -479,33 +575,62 @@ form.addEventListener("submit", (e) => {
         effacerErreur('message');
       }
 
-      // ── Si aucune erreur, simuler l'envoi ──
-      if (nbErreurs === 0) {
+      if (nbErreurs > 0) return;
 
-        // Désactiver le bouton pendant "l'envoi"
-        btnEnvoyer.disabled    = true;
-        btnEnvoyer.textContent = 'Envoi en cours...';
+      btnEnvoyer.disabled = true;
+      const texteOriginal = btnEnvoyer.querySelector('.btn-text').textContent;
+      btnEnvoyer.querySelector('.btn-text').textContent = 'Envoi en cours...';
 
-        // Simulation d'un délai réseau (1.5 secondes)
-        setTimeout(function () {
-
-          // Afficher le message de succès
+      /* ==========================================================
+         🔌 EMAILJS — Pour activer un envoi réel d'email :
+         1. Crée un compte sur https://www.emailjs.com/
+         2. Décommente le <script> EmailJS dans index.html
+         3. Remplace les valeurs ci-dessous par les tiennes
+         4. Décommente le bloc emailjs.send(...) et supprime
+            le setTimeout de simulation juste après.
+         ========================================================== */
+      /*
+      emailjs.send('TON_SERVICE_ID', 'TON_TEMPLATE_ID', {
+        from_name:  nom,
+        from_email: email,
+        message:    message,
+      }, 'TA_PUBLIC_KEY')
+        .then(function () {
+          afficherSucces();
+        })
+        .catch(function (erreur) {
+          console.error('Erreur EmailJS :', erreur);
           if (divSucces) {
-            divSucces.textContent = '✅ Message envoyé avec succès ! Je vous réponds bientôt.';
-            divSucces.style.display = 'block';
+            divSucces.textContent = '❌ Une erreur est survenue. Réessayez plus tard.';
+            divSucces.classList.add('show-msg');
           }
+          btnEnvoyer.disabled = false;
+          btnEnvoyer.querySelector('.btn-text').textContent = texteOriginal;
+        });
+      */
 
-          // Réinitialiser le formulaire
-          formulaire.reset();
-          btnEnvoyer.disabled    = false;
-          btnEnvoyer.textContent = 'Envoyer le message';
+      // Simulation d'envoi (à supprimer une fois EmailJS branché ci-dessus)
+      setTimeout(afficherSucces, 1200);
 
-          // Cacher le message de succès après 5 secondes
-          setTimeout(function () {
-            if (divSucces) divSucces.style.display = 'none';
-          }, 5000);
+      function afficherSucces() {
+        sessionStorage.setItem('dernier-envoi-form', String(Date.now()));
 
-        }, 1500);
+        if (divSucces) {
+          divSucces.textContent = '✅ Message envoyé avec succès ! Je vous réponds bientôt.';
+          divSucces.classList.add('show-msg');
+        }
+
+        formulaire.reset();
+        [champNom, champEmail, champMessage].forEach(function (champ) {
+          if (champ) champ.classList.remove('valid', 'invalid');
+        });
+
+        btnEnvoyer.disabled = false;
+        btnEnvoyer.querySelector('.btn-text').textContent = texteOriginal;
+
+        setTimeout(function () {
+          if (divSucces) divSucces.classList.remove('show-msg');
+        }, 5000);
       }
     });
   }
@@ -514,14 +639,7 @@ form.addEventListener("submit", (e) => {
 
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 9 : SMOOTH SCROLL pour les liens de nav
-     
-     Quand on clique sur un lien "#section", le scroll est
-     animé de façon douce.
-     
-     Note : scroll-behavior: smooth; dans CSS gère déjà ça
-     pour la plupart des navigateurs modernes. Ce code JS
-     assure la compatibilité avec les plus anciens.
+     ✅ 14. SMOOTH SCROLL POUR LES LIENS D'ANCRE
      ========================================================== */
   function smoothScroll() {
     const liens = document.querySelectorAll('a[href^="#"]');
@@ -529,23 +647,16 @@ form.addEventListener("submit", (e) => {
     liens.forEach(function (lien) {
       lien.addEventListener('click', function (e) {
         const cibleId = lien.getAttribute('href');
-
-        // On ignore les href="#" vides
         if (cibleId === '#') return;
 
         const cible = document.querySelector(cibleId);
-
         if (cible) {
-          e.preventDefault(); // Empêcher le saut brusque par défaut
+          e.preventDefault();
 
-          // Calculer la position en tenant compte de la navbar
           const hauteurNavbar = 70;
           const positionCible = cible.getBoundingClientRect().top + window.scrollY - hauteurNavbar;
 
-          window.scrollTo({
-            top:      positionCible,
-            behavior: 'smooth',
-          });
+          window.scrollTo({ top: positionCible, behavior: 'smooth' });
         }
       });
     });
@@ -555,87 +666,97 @@ form.addEventListener("submit", (e) => {
 
 
   /* ==========================================================
-     ✅ FONCTIONNALITÉ 10 : GESTION DES ERREURS JAVASCRIPT
-     
-     Ce bloc "attrape" les erreurs imprévues et les affiche
-     proprement dans la console, sans crasher le site.
-     
-     window.onerror = gestionnaire d'erreurs global
+     ✅ 15. ALERTE DE BIENVENUE (une fois par session)
+     ========================================================== */
+  function afficherBienvenue() {
+    const dejaVisite = sessionStorage.getItem('bienvenue_affiche');
+    if (dejaVisite) return;
+
+    setTimeout(function () {
+      sessionStorage.setItem('bienvenue_affiche', 'oui');
+
+      const toast = document.createElement('div');
+      toast.setAttribute('role', 'status');
+      toast.textContent = '👋 Bienvenue sur mon portfolio !';
+
+      Object.assign(toast.style, {
+        position:     'fixed',
+        bottom:       '24px',
+        left:         '24px',
+        background:   '#0d6efd',
+        color:        'white',
+        padding:      '14px 22px',
+        borderRadius: '10px',
+        fontFamily:   "'DM Sans', sans-serif",
+        fontWeight:   '500',
+        fontSize:     '0.95rem',
+        zIndex:       '9999',
+        boxShadow:    '0 8px 30px rgba(13,110,253,0.4)',
+        opacity:      '0',
+        transform:    'translateY(20px)',
+        transition:   'all 0.4s ease',
+        maxWidth:     'calc(100vw - 48px)',
+      });
+
+      document.body.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          toast.style.opacity   = '1';
+          toast.style.transform = 'translateY(0)';
+        });
+      });
+
+      setTimeout(function () {
+        toast.style.opacity   = '0';
+        toast.style.transform = 'translateY(20px)';
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+
+    }, 1200);
+  }
+
+  afficherBienvenue();
+
+
+  /* ==========================================================
+     ✅ 16. GESTION GLOBALE DES ERREURS JAVASCRIPT
      ========================================================== */
   window.onerror = function (message, source, ligne, colonne, erreur) {
-    // On log l'erreur de façon lisible dans la console
     console.error('🔴 Erreur JavaScript détectée :');
     console.error('   Message :', message);
     console.error('   Fichier  :', source);
     console.error('   Ligne    :', ligne, '| Colonne :', colonne);
     if (erreur) console.error('   Détail  :', erreur.stack);
-
-    // On retourne true pour éviter que l'erreur s'affiche en rouge
-    // dans la console de façon non formatée
     return true;
   };
 
-  // Attraper aussi les Promises rejetées sans .catch()
   window.addEventListener('unhandledrejection', function (event) {
     console.error('🔴 Promesse rejetée non gérée :', event.reason);
   });
 
-
-  /* ==========================================================
-     ✅ BONUS : APPARITION PROGRESSIVE — déjà gérée par la
-     fonctionnalité 5 (Intersection Observer). Ici on s'assure
-     que les éléments dans le viewport initial s'animent dès
-     le chargement.
-     ========================================================== */
-  function animerElementsInitiaux() {
-    // Petite pause pour laisser le CSS s'initialiser
-    setTimeout(function () {
-      const elementsVisibles = document.querySelectorAll('.hidden');
-      elementsVisibles.forEach(function (el) {
-        const rect = el.getBoundingClientRect();
-        // Si l'élément est dans la zone visible de l'écran
-        if (rect.top < window.innerHeight) {
-          el.classList.add('show');
-        }
-      });
-    }, 100);
-  }
-   const hiddenElements = document.querySelectorAll(".hidden");
-
-const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(entry=>{
-        if(entry.isIntersecting){
-            entry.target.classList.add("show");
-        }
-    });
-});
-
-   
-hiddenElements.forEach(el=>{
-    observer.observe(el);
-});
-
-  animerElementsInitiaux();
-
-
   /* ----------------------------------------------------------
-     📋 RÉCAPITULATIF DE CE QUI EST CHARGÉ :
-     
-     1.  ✅ Alert de bienvenue (toast personnalisé)
-     2.  ✅ Effet typing sur le titre
-     3.  ✅ Bouton retour en haut
-     4.  ✅ Navigation active pendant le scroll
-     5.  ✅ Scroll animation (Intersection Observer)
-     6.  ✅ Menu hamburger mobile
-     7.  ✅ Effets 3D dynamiques sur les cartes
-     8.  ✅ Validation du formulaire avec messages d'erreur
-     9.  ✅ Smooth scroll pour tous les liens ancres
-     10. ✅ Gestion globale des erreurs JavaScript
-     
-     💡 CONSEIL POUR DÉBUTER :
-     Utilise F12 dans ton navigateur pour ouvrir les outils
-     développeurs. L'onglet "Console" affiche les messages
-     console.log() et les erreurs. C'est ton meilleur ami !
+     📋 RÉCAPITULATIF DES FONCTIONNALITÉS CHARGÉES :
+
+     1.  Loader au chargement
+     2.  Mode sombre / clair (persistant via localStorage)
+     3.  Curseur personnalisé (desktop)
+     4.  Effet typing sur le titre d'accueil
+     5.  Particules animées en arrière-plan (canvas)
+     6.  Animations d'apparition au scroll (fade-up/left/right)
+     7.  Barres de compétences animées
+     8.  Compteurs animés (projets, compétences, motivation)
+     9.  Bouton retour en haut
+     10. Navigation active pendant le scroll
+     11. Menu hamburger mobile (+ fermeture par Échap)
+     12. Effets 3D sur les cartes au survol
+     13. Validation complète du formulaire + honeypot anti-spam
+     14. Smooth scroll pour les liens d'ancre
+     15. Toast de bienvenue (une fois par session)
+     16. Gestion globale des erreurs JS
+
+     💡 F12 dans le navigateur ouvre les outils développeurs :
+     l'onglet "Console" affiche les console.log() et erreurs.
      ---------------------------------------------------------- */
 
-}); // Fin du DOMContentLoaded
+});
