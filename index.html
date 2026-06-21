@@ -1,308 +1,343 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <!-- ✅ Le viewport permet au site de s'adapter aux téléphones -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- ✅ Description pour les moteurs de recherche (Google) -->
-  <meta name="description" content="Portfolio professionnel de Bahati Kamina, développeur web." />
-  <title>Bahati Kamina — Portfolio</title>
 
-  <!-- Google Fonts : on importe une belle police professionnelle -->
+  <!-- ============ SEO : balises meta de base ============ -->
+  <title>Bahati Kamina — Développeur Web Junior | Portfolio</title>
+  <meta name="description" content="Portfolio de Bahati Kamina, étudiant en informatique et développeur web junior basé à Bujumbura, Burundi. Découvrez mes compétences en HTML, CSS, JavaScript et mes projets." />
+  <meta name="keywords" content="Bahati Kamina, développeur web, portfolio, Bujumbura, Burundi, HTML, CSS, JavaScript, développeur junior" />
+  <meta name="author" content="Bahati Kamina" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://bahati-div.github.io/Bahati-portfolio/" />
+
+  <!-- ============ Open Graph (partage sur réseaux sociaux) ============ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Bahati Kamina — Développeur Web Junior" />
+  <meta property="og:description" content="Portfolio professionnel de Bahati Kamina : étudiant en informatique passionné par le développement web." />
+  <meta property="og:image" content="https://bahati-div.github.io/Bahati-portfolio/image/og-cover.jpg" />
+  <meta property="og:url" content="https://bahati-div.github.io/Bahati-portfolio/" />
+  <meta property="og:locale" content="fr_FR" />
+
+  <!-- ============ Twitter Card ============ -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Bahati Kamina — Développeur Web Junior" />
+  <meta name="twitter:description" content="Portfolio professionnel de Bahati Kamina, développeur web junior à Bujumbura." />
+  <meta name="twitter:image" content="https://bahati-div.github.io/Bahati-portfolio/image/og-cover.jpg" />
+
+  <!-- ============ Favicon ============ -->
+  <link rel="icon" type="image/png" sizes="32x32" href="image/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="image/favicon-16x16.png" />
+  <link rel="apple-touch-icon" href="image/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0d6efd" />
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
-  <!-- Notre feuille de style CSS -->
   <link rel="stylesheet" href="style.css" />
-
-  <!-- 
-    ✅ CORRECTION : On met le script UNE SEULE FOIS, en bas du body
-    (dans ton code original, script.js était chargé deux fois !)
-  -->
 </head>
 <body>
 
+  <!-- ========== LOADER AU CHARGEMENT ========== -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-logo">۞<span>BK</span></div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+  </div>
+
+  <!-- ========== LIEN D'ACCÈS RAPIDE (accessibilité clavier) ========== -->
+  <a href="#accueil" class="skip-link">Aller au contenu principal</a>
+
+  <!-- ========== CURSEUR PERSONNALISÉ (desktop uniquement) ========== -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
   <!-- ========== BARRE DE NAVIGATION ========== -->
-  <!-- 
-    ✅ CORRECTION : On utilise <nav> une seule fois (tu en avais deux vides)
-    ✅ CORRECTION : Les ancres (#accueil, #apropos...) correspondent 
-       exactement aux id= des sections ci-dessous
-  -->
-  <nav id="navbar">
-    <div class="nav-logo">۞BK</div>
-    <ul class="nav-links">
-      <li><a href="#accueil"   class="nav-link active">Accueil</a></li>
-      <li><a href="#apropos"   class="nav-link">À propos</a></li>
+  <nav id="navbar" aria-label="Navigation principale">
+    <a href="#accueil" class="nav-logo">۞BK</a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#accueil" class="nav-link active">Accueil</a></li>
+      <li><a href="#apropos" class="nav-link">À propos</a></li>
       <li><a href="#competences" class="nav-link">Compétences</a></li>
-      <li><a href="#projets"   class="nav-link">Projets</a></li>
-      <li><a href="#contact"   class="nav-link">Contact</a></li>
-      <li> <a href="#cv" class="nav-link">Voir mon CV</a></li>
+      <li><a href="#projets" class="nav-link">Projets</a></li>
+      <li><a href="#cv" class="nav-link">CV</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
     </ul>
-    <!-- Bouton hamburger pour mobile -->
-    <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu">
-      <span></span><span></span><span></span>
-    </button>
+
+    <div class="nav-actions">
+      <!-- Bouton mode sombre / clair -->
+      <button id="theme-toggle" class="theme-toggle" aria-label="Changer le thème clair / sombre" aria-pressed="false">
+        <span class="theme-icon icon-moon">🌙</span>
+        <span class="theme-icon icon-sun">☀️</span>
+      </button>
+
+      <!-- Bouton hamburger pour mobile -->
+      <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="nav-links">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
   <!-- ========== EN-TÊTE (HERO) ========== -->
   <header id="accueil">
-    <!-- Fond décoratif animé -->
-    <div class="hero-bg"></div>
+    <div class="hero-bg" aria-hidden="true"></div>
+    <canvas id="particles" aria-hidden="true"></canvas>
+
     <div class="hero-content">
-      <!-- 
-        ✅ CORRECTION : width et height doivent être en CSS, pas en attributs HTML
-        L'attribut width="150px" est incorrect (px n'est pas valide en HTML)
-      -->
       <img
         src="image/moi.jpg"
-        alt="Ma photo de profil"
-        class="profile">
-      
+        alt="Photo de profil de Bahati Kamina"
+        class="profile"
+        width="140"
+        height="140"
+        loading="eager"
+      />
+
       <h1>
-        <!-- Le titre aura un effet "typing" grâce au JavaScript -->
-        <span id="typing-text"></span>
-        <span class="cursor">|</span>
+        <span id="typing-text" aria-live="polite"></span>
+        <span class="cursor" aria-hidden="true">|</span>
       </h1>
       <p class="hero-subtitle">
         Étudiant passionné par l'informatique &amp; le développement web
       </p>
-      <!-- Bouton qui fait défiler vers la section "À propos" -->
-      <a href="#apropos" class="btn btn-primary">Découvrir mon profil</a>
-      <a href="CV/Bahati_kamina_CV.pdf" class="btn btn-primary" Download>Télécharger mon CV</a>
+
+      <div class="hero-actions">
+        <a href="#apropos" class="btn btn-primary">Découvrir mon profil</a>
+        <a href="CV/Bahati_Kamina_CV.pdf" class="btn btn-outline" download>Télécharger mon CV</a>
+      </div>
     </div>
+
+    <a href="#apropos" class="scroll-indicator" aria-label="Défiler vers la section suivante">
+      <span></span>
+    </a>
   </header>
 
   <!-- ========== SECTION À PROPOS ========== -->
-  <!-- 
-    ✅ CORRECTION : class="hidden" pour l'animation d'apparition
-    (avant, la section contact avait l'attribut HTML "hidden" qui la cachait complètement)
-  -->
-  <section id="apropos" class="section hidden">
+  <section id="apropos" class="section" aria-labelledby="apropos-title">
     <div class="section-inner">
-      <h2 class="section-title">À propos de moi</h2>
+      <h2 class="section-title reveal" id="apropos-title">À propos de moi</h2>
+
       <div class="about-grid">
-        <div class="about-text">
+        <div class="about-text reveal" data-reveal="left">
           <p>
-            Je suis <strong>Bahati Kamina</strong>, étudiant en informatique 
-            basé à Bujumbura. Motivé, discipliné et passionné par la technologie, 
-            je crois fermement que le numérique peut transformer l'Afrique — 
+            Je suis <strong>Bahati Kamina</strong>, étudiant en informatique
+            basé à Bujumbura. Motivé, discipliné et passionné par la technologie,
+            je crois fermement que le numérique peut transformer l'Afrique —
             et je veux faire partie de cette transformation.
           </p>
           <p>
-            Mon objectif : devenir développeur professionnel et créer des 
+            Mon objectif : devenir développeur professionnel et créer des
             solutions numériques innovantes qui répondent aux besoins locaux.
           </p>
-          <!-- ✅ Ce bouton fait défiler vers les compétences -->
           <a href="#competences" class="btn btn-outline">Voir mes compétences</a>
         </div>
-        <!-- Quelques chiffres clés -->
-        <div class="about-stats">
-          <div class="stat-card hidden">
-            <span class="stat-number">3+</span>
+
+        <!-- Compteurs animés -->
+        <div class="about-stats reveal" data-reveal="right">
+          <div class="stat-card">
+            <span class="stat-number" data-counter data-target="3" data-suffix="+">0</span>
             <span class="stat-label">Technologies maîtrisées</span>
           </div>
-          <div class="stat-card hidden">
-            <span class="stat-number">1</span>
-            <span class="stat-label">Projet réalisé</span>
+          <div class="stat-card">
+            <span class="stat-number" data-counter data-target="2">0</span>
+            <span class="stat-label">Projets réalisés</span>
           </div>
-          <div class="stat-card hidden">
-            <span class="stat-number">100%</span>
+          <div class="stat-card">
+            <span class="stat-number" data-counter data-target="100" data-suffix="%">0</span>
             <span class="stat-label">Motivation</span>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <a href="CV/Bahati_Kamina_CV.pdf" target="_blank" class="btn btn-primary"> Voir mon CV</a>
 
   <!-- ========== SECTION COMPÉTENCES ========== -->
-  <!-- 
-    ✅ CORRECTION : id="competences" SANS accent
-    Les accents dans les id peuvent causer des bugs dans certains navigateurs
-  -->
-  <section id="competences" class="section hidden">
+  <section id="competences" class="section" aria-labelledby="competences-title">
     <div class="section-inner">
-      <h2 class="section-title">Mes compétences</h2>
-      <!-- 
-        ✅ CORRECTION : La classe s'appelle "skills-grid" (cohérent)
-        (avant il y avait "skeel" — faute de frappe — et "skills" en double)
-      -->
-      <div class="skills-grid">
+      <h2 class="section-title reveal" id="competences-title">Mes compétences</h2>
 
-        <!-- Chaque carte de compétence -->
-        <div class="card hidden" data-delay="0">
-          <div class="card-icon">🌐</div>
+      <div class="skills-grid">
+        <div class="card reveal" data-reveal="up" data-delay="0">
+          <div class="card-icon" aria-hidden="true">🌐</div>
           <h3>HTML</h3>
           <p>Création de la structure des pages web avec des balises sémantiques.</p>
-          <div class="skill-bar"><div class="skill-fill" style="--w:75%"></div></div>
+          <div class="skill-bar" role="progressbar" aria-label="Niveau HTML" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" style="--w:75%"></div>
+          </div>
+          <span class="skill-percent" data-skill-percent>75%</span>
         </div>
 
-        <div class="card hidden" data-delay="100">
-          <div class="card-icon">🎨</div>
+        <div class="card reveal" data-reveal="up" data-delay="100">
+          <div class="card-icon" aria-hidden="true">🎨</div>
           <h3>CSS</h3>
           <p>Mise en forme, animations et design responsive des sites web.</p>
-          <div class="skill-bar"><div class="skill-fill" style="--w:65%"></div></div>
+          <div class="skill-bar" role="progressbar" aria-label="Niveau CSS" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" style="--w:65%"></div>
+          </div>
+          <span class="skill-percent" data-skill-percent>65%</span>
         </div>
 
-        <div class="card hidden" data-delay="200">
-          <div class="card-icon">⚡</div>
+        <div class="card reveal" data-reveal="up" data-delay="200">
+          <div class="card-icon" aria-hidden="true">⚡</div>
           <h3>JavaScript</h3>
           <p>Ajout d'interactivité et de dynamisme dans les sites web.</p>
-          <div class="skill-bar"><div class="skill-fill" style="--w:50%"></div></div>
+          <div class="skill-bar" role="progressbar" aria-label="Niveau JavaScript" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" style="--w:50%"></div>
+          </div>
+          <span class="skill-percent" data-skill-percent>50%</span>
         </div>
 
-        <div class="card hidden" data-delay="300">
-          <div class="card-icon">📝</div>
-          <h3>Microsoft Word</h3>
-          <p>Traitement de texte et insertion d'images professionnelles.</p>
-          <div class="skill-bar"><div class="skill-fill" style="--w:90%"></div></div>
+        <div class="card reveal" data-reveal="up" data-delay="300">
+          <div class="card-icon" aria-hidden="true">🐙</div>
+          <h3>GitHub</h3>
+          <p>Gestion de versions et publication de projets avec Git &amp; GitHub.</p>
+          <div class="skill-bar" role="progressbar" aria-label="Niveau GitHub" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" style="--w:60%"></div>
+          </div>
+          <span class="skill-percent" data-skill-percent>60%</span>
         </div>
 
-        <div class="card hidden" data-delay="400">
-          <div class="card-icon">📊</div>
-          <h3>Microsoft Excel</h3>
-          <p>Calculs, formules et gestion de données en tableau.</p>
-          <div class="skill-bar"><div class="skill-fill" style="--w:80%"></div></div>
+        <div class="card reveal" data-reveal="up" data-delay="400">
+          <div class="card-icon" aria-hidden="true">📊</div>
+          <h3>Microsoft Office</h3>
+          <p>Word, Excel et PowerPoint pour la rédaction, le calcul et la présentation.</p>
+          <div class="skill-bar" role="progressbar" aria-label="Niveau Microsoft Office" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">
+            <div class="skill-fill" style="--w:85%"></div>
+          </div>
+          <span class="skill-percent" data-skill-percent>85%</span>
         </div>
-
-        <div class="card hidden" data-delay="500">
-          <div class="card-icon">📽️</div>
-          <h3>PowerPoint</h3>
-          <p>Création de présentations visuelles percutantes.</p>
-          <div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div>
-        </div>
-
-      </div><!-- fin .skills-grid -->
+      </div>
     </div>
   </section>
-  <section id="cv" class="section">
-  <div class="section-inner">
-    <section id="cv" class="section">
-    <h2 class="section-title">Mon Curriculum Vitae</h2>
-    
-    <div class="cv-card">
-      <h3>Bahati Kamina</h3>
-      <p><strong>Étudiant en informatique Développeur web junior </strong></p>
-      <p>📍 Bujumbura Burundi </p>
-      <p> 📞 +25764388481 </p>
-        <p> +257 68842656 </p>
-        <p> 📧 bahatikaminaloti59@gmail.com </p>
-        <p>🌐 bahati-div.githb.io/Bauhati-portfolio </p>
 
-      <h4>Profil</h4>
-      <p> Je suis un étudiant en informatique passionné par les technologies numériques, le développement web et 
-        l'innovation. Motivé, sérieux et désireux d'acquérir de  nouvelles compétences afin de contribuer à la transformation numérique de l'Afrique. </p>
-      
-      <h4>Formation</h4>
-      <ul>
-        <li>Licence en Informatique</li>
-        <li>Université Espoir d'Afrique</li>
-      </ul>
-
-      <h4>Compétences</h4>
-      <ul>
-        <li>HTML</li>
-        <li>CSS</li>
-        <li>JavaScript</li>
-        <li>Microsoft Word</li>
-        <li>Microsoft Excel</li>
-        <li>Microsoft PowerPoint</li>
-        <li>Utilisation de l'outil GitHub</li>
-      </ul>
-        <h3>projets</h3>
-      <ul>
-        <li>Création d'un Portfolio Personnel  pour présenter mon parcours, mes compétences et mes projets.</li>
-        <li>Réalisation de rapports, présentations et exercices pratiques dans le cadre de la formation en informatique.</li>
-      </ul>
-      
-        <h4>Langues</h4>
-      <ul>
-        <li>Français</li>
-        <li>Swahili</li>
-        <li>Kirundi</li>
-        <li>Anglais(Niveau de base)</li>
-      </ul>
-        <h4>Qualités </h4>
-      <ul>
-        <li> Motivation</li>
-        <li>  Discipline </li>
-        <li> Esprit d'apprentissage</li>
-        <li>  Travail en équipe</li>
-        <li> Sens de l'organisation</li>
-      </ul>
-        <h3>Objectif Professionnel </h3>
-        <p>Devenir développeur professionnel et participer à la création de solutions numériques innovantes répondant aux besoins locaux et internationaux.</p>
-
-      <a href="CV/Bahati_Kamina_CV.pdf"
-         download
-         class="btn btn-primary">
-         Télécharger le CV PDF
-      </a>
-    </div>
-  </div>
-  </section>
-        
   <!-- ========== SECTION PROJETS ========== -->
-  <section id="projets" class="section hidden">
+  <section id="projets" class="section" aria-labelledby="projets-title">
     <div class="section-inner">
-      <h2 class="section-title">Mes projets</h2>
-      <div class="projects-grid">
+      <h2 class="section-title reveal" id="projets-title">Mes projets</h2>
 
-        <div class="project-card hidden">
+      <div class="projects-grid">
+        <div class="project-card reveal" data-reveal="up" data-delay="0">
+          <div class="project-img-wrap">
+            <img src="image/projet-portfolio.jpg" alt="Aperçu du portfolio personnel" loading="lazy" class="project-img" />
+          </div>
           <div class="project-tag">HTML · CSS · JS</div>
           <h3>Portfolio personnel</h3>
           <p>
-            Création de mon site web personnel pour présenter mes compétences 
+            Création de mon site web personnel pour présenter mes compétences
             et mon parcours. Développé en HTML, CSS et JavaScript.
           </p>
-          <a href="#" class="btn btn-small">Voir le projet</a>
+          <a href="https://github.com/bahati-div/Bahati-portfolio" target="_blank" rel="noopener noreferrer" class="btn btn-small">Voir le projet</a>
         </div>
 
-        <div class="project-card hidden" data-delay="150">
+        <div class="project-card reveal" data-reveal="up" data-delay="150">
+          <div class="project-img-wrap">
+            <img src="image/projet-academique.jpg" alt="Aperçu des travaux académiques" loading="lazy" class="project-img" />
+          </div>
           <div class="project-tag">Académique</div>
           <h3>Travaux académiques</h3>
           <p>
-            Réalisation de rapports, exposés et travaux pratiques 
+            Réalisation de rapports, exposés et travaux pratiques
             dans le cadre de ma formation en informatique.
           </p>
-          <a href="#" class="btn btn-small">En savoir plus</a>
+          <a href="#contact" class="btn btn-small">En savoir plus</a>
         </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- ========== SECTION CV ========== -->
+  <section id="cv" class="section" aria-labelledby="cv-title">
+    <div class="section-inner">
+      <h2 class="section-title reveal" id="cv-title">Mon Curriculum Vitae</h2>
+
+      <div class="cv-card reveal" data-reveal="up">
+        <h3>Bahati Kamina</h3>
+        <p class="cv-role"><strong>Étudiant en informatique — Développeur web junior</strong></p>
+
+        <ul class="cv-contact">
+          <li>📍 Bujumbura, Burundi</li>
+          <li>📞 <a href="tel:+25764388481">+257 64 38 84 81</a> · <a href="tel:+25768842656">+257 68 84 26 56</a></li>
+          <li>📧 <a href="mailto:bahatikaminaloti59@gmail.com">bahatikaminaloti59@gmail.com</a></li>
+          <li>🌐 <a href="https://bahati-div.github.io/Bahati-portfolio" target="_blank" rel="noopener noreferrer">bahati-div.github.io/Bahati-portfolio</a></li>
+        </ul>
+
+        <h4>Profil</h4>
+        <p>
+          Je suis un étudiant en informatique passionné par les technologies numériques, le développement web et
+          l'innovation. Motivé, sérieux et désireux d'acquérir de nouvelles compétences afin de contribuer à la
+          transformation numérique de l'Afrique.
+        </p>
+
+        <h4>Formation</h4>
+        <ul>
+          <li>Licence en Informatique</li>
+          <li>Université Espoir d'Afrique</li>
+        </ul>
+
+        <h4>Compétences</h4>
+        <ul class="cv-tags">
+          <li>HTML</li>
+          <li>CSS</li>
+          <li>JavaScript</li>
+          <li>GitHub</li>
+          <li>Microsoft Word</li>
+          <li>Microsoft Excel</li>
+          <li>Microsoft PowerPoint</li>
+        </ul>
+
+        <h4>Projets</h4>
+        <ul>
+          <li>Création d'un portfolio personnel pour présenter mon parcours, mes compétences et mes projets.</li>
+          <li>Réalisation de rapports, présentations et exercices pratiques dans le cadre de la formation en informatique.</li>
+        </ul>
+
+        <h4>Langues</h4>
+        <ul>
+          <li>Français</li>
+          <li>Swahili</li>
+          <li>Kirundi</li>
+          <li>Anglais (niveau de base)</li>
+        </ul>
+
+        <h4>Qualités</h4>
+        <ul>
+          <li>Motivation</li>
+          <li>Discipline</li>
+          <li>Esprit d'apprentissage</li>
+          <li>Travail en équipe</li>
+          <li>Sens de l'organisation</li>
+        </ul>
+
+        <h4>Objectif professionnel</h4>
+        <p>Devenir développeur professionnel et participer à la création de solutions numériques innovantes répondant aux besoins locaux et internationaux.</p>
+
+        <a href="CV/Bahati_Kamina_CV.pdf" download class="btn btn-primary">Télécharger le CV (PDF)</a>
       </div>
     </div>
   </section>
 
   <!-- ========== SECTION CONTACT ========== -->
-  <!-- 
-    ✅ CORRECTION : On supprime l'attribut HTML "hidden" 
-    (hidden = l'élément est complètement invisible ET inaccessible)
-    On utilise notre classe CSS .hidden à la place
-  -->
-  <section id="contact" class="section hidden">
+  <section id="contact" class="section" aria-labelledby="contact-title">
     <div class="section-inner">
-      <h2 class="section-title">Me contacter</h2>
-      <p class="contact-intro">Tu as un projet ? Parlons-en !</p>
+      <h2 class="section-title reveal" id="contact-title">Me contacter</h2>
+      <p class="contact-intro reveal">Tu as un projet ? Parlons-en !</p>
 
-      <!-- 
-        ✅ BONNE PRATIQUE : Le formulaire a action="#" et method="post"
-        ✅ Chaque input a un label associé (accessibilité)
-        ✅ Les champs ont name= et required pour la validation HTML native
-      -->
-      <form id="contact-form" action="#" method="post" novalidate>
-
+      <form id="contact-form" class="reveal" novalidate>
         <div class="form-group">
           <label for="name">Votre nom</label>
           <input
             type="text"
             id="name"
             name="name"
+            autocomplete="name"
             required
             minlength="2"
+            maxlength="80"
+            aria-describedby="name-error"
           />
-          <!-- Message d'erreur affiché par JavaScript -->
-          <span class="error-msg" id="name-error"></span>
+          <span class="error-msg" id="name-error" role="alert"></span>
         </div>
 
         <div class="form-group">
@@ -311,9 +346,12 @@
             type="email"
             id="email"
             name="email"
+            autocomplete="email"
             required
+            maxlength="120"
+            aria-describedby="email-error"
           />
-          <span class="error-msg" id="email-error"></span>
+          <span class="error-msg" id="email-error" role="alert"></span>
         </div>
 
         <div class="form-group">
@@ -324,17 +362,23 @@
             rows="5"
             required
             minlength="10"
+            maxlength="2000"
+            aria-describedby="message-error"
           ></textarea>
-          <span class="error-msg" id="message-error"></span>
+          <span class="error-msg" id="message-error" role="alert"></span>
+        </div>
+
+        <!-- Honeypot anti-spam : champ invisible pour les humains, visible pour les bots -->
+        <div class="form-group honeypot" aria-hidden="true">
+          <label for="website">Ne pas remplir</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
         </div>
 
         <button type="submit" class="btn btn-primary" id="submit-btn">
-          Envoyer le message
+          <span class="btn-text">Envoyer le message</span>
         </button>
 
-        <!-- Message de succès affiché après envoi -->
-        <div id="form-success" class="success-msg" aria-live="polite"></div>
-
+        <div id="form-success" class="success-msg" role="status" aria-live="polite"></div>
       </form>
     </div>
   </section>
@@ -346,16 +390,13 @@
   </footer>
 
   <!-- ========== BOUTON RETOUR EN HAUT ========== -->
-  <!-- 
-    ✅ CORRECTION : Ce bouton est placé EN DEHORS des sections
-    (dans ton code il était bizarrement dans une carte de compétence !)
-  -->
   <button id="btn-top" aria-label="Retour en haut de page" title="Haut de page">
     ↑
   </button>
 
-  <!-- Script JavaScript — chargé en dernier pour que le HTML soit prêt -->
-  <script src="script.js"></script>
+  <!-- EmailJS (voir commentaire dans script.js pour activer l'envoi réel) -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script> -->
 
+  <script src="script.js" defer></script>
 </body>
 </html>
