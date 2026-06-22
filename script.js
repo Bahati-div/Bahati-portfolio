@@ -480,6 +480,123 @@ const EMAILJS_CONFIG = {
   PUBLIC_KEY:  'TA_PUBLIC_KEY',    // ex : 'AbCdEfGhIjKlMnOp'
 };
 
+   /* ==========================================================
+   ✅ VALIDATION + ENVOI RÉEL DU FORMULAIRE (EmailJS)
+   ========================================================== */
+function validerFormulaire() {
+  const formulaire   = document.getElementById('contact-form');
+  const champNom     = document.getElementById('name');
+  const champEmail   = document.getElementById('email');
+  const champMessage = document.getElementById('message');
+  const champPiege   = document.getElementById('website'); // honeypot anti-spam
+  const divSucces    = document.getElementById('form-success');
+  const divErreur    = document.getElementById('form-error');
+  const btnEnvoyer   = document.getElementById('submit-btn');
+
+  if (!formulaire) return;
+
+  // Initialiser EmailJS avec ta clé publique
+  if (window.emailjs) {
+    emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+  }
+
+  function afficherErreurChamp(champId, message) {
+    const erreur = document.getElementById(champId + '-error');
+    const champ  = document.getElementById(champId);
+    if (erreur) erreur.textContent = message;
+    if (champ) { champ.classList.add('invalid'); champ.classList.remove('valid'); }
+  }
+
+  function effacerErreurChamp(champId) {
+    const erreur = document.getElementById(champId + '-error');
+    const champ  = document.getElementById(champId);
+    if (erreur) erreur.textContent = '';
+    if (champ) { champ.classList.remove('invalid'); champ.classList.add('valid'); }
+  }
+
+  function masquerMessages() {
+    if (divSucces) divSucces.classList.remove('show-msg');
+    if (divErreur) divErreur.classList.remove('show-msg');
+  }
+
+  [champNom, champEmail, champMessage].forEach(function (champ) {
+    if (!champ) return;
+    champ.addEventListener('input', function () {
+      effacerErreurChamp(champ.id);
+    });
+  });
+
+  formulaire.addEventListener('submit', function (e) {
+    e.preventDefault();
+    masquerMessages();
+
+    // Honeypot : si rempli, c'est un bot → on ignore silencieusement
+    if (champPiege && champPiege.value.trim() !== '') {
+      formulaire.reset();
+      return;
+    }
+
+    const nom     = champNom.value.trim();
+    const email   = champEmail.value.trim();
+    const message = champMessage.value.trim();
+
+    let nbErreurs = 0;
+
+    if (nom.length < 2) {
+      afficherErreurChamp('name', '⚠️ Le nom doit contenir au moins 2 caractères.');
+      nbErreurs++;
+    } else {
+      effacerErreurChamp('name');
+    }
+
+    const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!emailValide) {
+      afficherErreurChamp('email', '⚠️ Veuillez entrer une adresse email valide.');
+      nbErreurs++;
+    } else {
+      effacerErreurChamp('email');
+    }
+
+    if (message.length < 10) {
+      afficherErreurChamp('message', '⚠️ Le message doit contenir au moins 10 caractères.');
+      nbErreurs++;
+    } else {
+      effacerErreurChamp('message');
+    }
+
+    if (nbErreurs > 0) return; // on s'arrête si la validation échoue
+
+    // ── Envoi réel via EmailJS ──
+    btnEnvoyer.disabled = true;
+    const texteOriginal = btnEnvoyer.querySelector('.btn-text').textContent;
+    btnEnvoyer.querySelector('.btn-text').textContent = 'Envoi en cours...';
+
+    emailjs.sendForm(EMAILJS_CONFIG.SERVICE_ID, EMAILJS_CONFIG.TEMPLATE_ID, formulaire)
+      .then(function () {
+        if (divSucces) {
+          divSucces.textContent = '✅ Message envoyé avec succès ! Je vous réponds bientôt.';
+          divSucces.classList.add('show-msg');
+        }
+        formulaire.reset();
+        [champNom, champEmail, champMessage].forEach(c => c.classList.remove('valid', 'invalid'));
+      })
+      .catch(function (erreur) {
+        console.error('Erreur EmailJS :', erreur);
+        if (divErreur) {
+          divErreur.textContent = '❌ Une erreur est survenue. Réessayez plus tard ou contactez-moi directement par email.';
+          divErreur.classList.add('show-msg');
+        }
+      })
+      .finally(function () {
+        btnEnvoyer.disabled = false;
+        btnEnvoyer.querySelector('.btn-text').textContent = texteOriginal;
+        setTimeout(masquerMessages, 6000);
+      });
+  });
+}
+
+validerFormulaire();
+
 
   /* ==========================================================
      ✅ 13. VALIDATION DU FORMULAIRE DE CONTACT
