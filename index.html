@@ -489,66 +489,62 @@
     </div>
     <!-- ===== FIN CARTE DE CONTACT ===== -->
 
-    <form id="contact-form" class="reveal" novalidate>
-      <!-- ... le formulaire existant reste inchangé ici ... -->
+    <form id="contact-form" class="reveal" novalidate autocomplete="on">
+  <div class="form-group">
+    <label for="name">Votre nom</label>
+    <input
+      type="text"
+      id="name"
+      name="user_name"
+      autocomplete="name"
+      required
+      minlength="2"
+      maxlength="80"
+      pattern="[a-zA-ZÀ-ÿ\s'\-]{2,80}"
+      aria-describedby="name-error"
+    />
+    <span class="error-msg" id="name-error" role="alert"></span>
+  </div>
 
-      <form id="contact-form" class="reveal" novalidate>
-        <div class="form-group">
-          <label for="name">Votre nom</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            autocomplete="name"
-            required
-            minlength="2"
-            maxlength="80"
-            aria-describedby="name-error"
-          />
-          <span class="error-msg" id="name-error" role="alert"></span>
-        </div>
+  <div class="form-group">
+    <label for="email">Votre email</label>
+    <input
+      type="email"
+      id="email"
+      name="user_email"
+      autocomplete="email"
+      required
+      maxlength="120"
+      aria-describedby="email-error"
+    />
+    <span class="error-msg" id="email-error" role="alert"></span>
+  </div>
 
-        <div class="form-group">
-          <label for="email">Votre email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            autocomplete="email"
-            required
-            maxlength="120"
-            aria-describedby="email-error"
-          />
-          <span class="error-msg" id="email-error" role="alert"></span>
-        </div>
+  <div class="form-group">
+    <label for="message">Votre message</label>
+    <textarea
+      id="message"
+      name="message"
+      rows="5"
+      required
+      minlength="10"
+      maxlength="2000"
+      aria-describedby="message-error"
+    ></textarea>
+    <span class="error-msg" id="message-error" role="alert"></span>
+  </div>
 
-        <div class="form-group">
-          <label for="message">Votre message</label>
-          <textarea
-            id="message"
-            name="message"
-            rows="5"
-            required
-            minlength="10"
-            maxlength="2000"
-            aria-describedby="message-error"
-          ></textarea>
-          <span class="error-msg" id="message-error" role="alert"></span>
-        </div>
+  <div class="form-group honeypot" aria-hidden="true">
+    <label for="website">Ne pas remplir</label>
+    <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+  </div>
 
-        <!-- Honeypot anti-spam : champ invisible pour les humains, visible pour les bots -->
-        <div class="form-group honeypot" aria-hidden="true">
-          <label for="website">Ne pas remplir</label>
-          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="submit-btn">
-          <span class="btn-text">Envoyer le message</span>
-        </button>
-
-        <div id="form-success" class="success-msg" role="status" aria-live="polite"></div>
-      </form>
-    </div>
+  <button type="submit" class="btn btn-primary" id="submit-btn">
+    <span class="btn-text">Envoyer le message</span>
+  </button>
+      <div id="form-success" class="success-msg" role="status" aria-live="polite"></div>
+      <div id="form-error" class="success-msg" role="alert" aria-live="assertive"></div>
+    </form>
   </section>
   <!-- Sur le <form>, empêcher l'autocomplete de champs sensibles si jamais ajoutés -->
 <form id="contact-form" class="reveal" novalidate autocomplete="on">
