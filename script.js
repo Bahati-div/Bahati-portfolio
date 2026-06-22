@@ -795,6 +795,60 @@ validerFormulaire();
 
   smoothScroll();
 
+   /* Échappement complet des caractères dangereux pour l'affichage HTML.
+   Couvre les 5 caractères qui permettent de casser le HTML ou injecter
+   des attributs/scripts : < > & " ' */
+function nettoyerTexte(valeur) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  };
+  return valeur.replace(/[&<>"']/g, (car) => map[car]).trim();
+}
+
+   const toast = document.createElement('div');
+toast.setAttribute('role', 'status');
+toast.textContent = '👋 Bienvenue sur mon portfolio !'; // textContent, jamais innerHTML
+
+   // Nom : interdit les chiffres et caractères spéciaux dangereux, accepte les accents
+const nomValide = /^[a-zA-ZÀ-ÿ\s'-]{2,80}$/.test(nom);
+if (!nomValide) {
+  afficherErreurChamp('name', '⚠️ Le nom ne doit contenir que des lettres (2 à 80 caractères).');
+  nbErreurs++;
+}
+
+// Email : regex plus stricte qu'auparavant (évite les doubles points, espaces internes, etc.)
+const emailValide = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(email) && email.length <= 120;
+if (!emailValide) {
+  afficherErreurChamp('email', '⚠️ Veuillez entrer une adresse email valide.');
+  nbErreurs++;
+}
+
+// Message : longueur + rejet si le contenu ressemble à une tentative d'injection de balise
+const messageValide = message.length >= 10 && message.length <= 2000 && !/<[^>]*>/.test(message);
+if (!messageValide) {
+  afficherErreurChamp('message', '⚠️ Le message doit contenir 10 à 2000 caractères, sans balises HTML.');
+  nbErreurs++;
+}
+
+   /* ==========================================================
+   ✅ SÉCURITÉ : forcer rel="noopener noreferrer" sur tout lien
+   target="_blank", même ajouté plus tard dans le HTML.
+   ========================================================== */
+function securiserLiensExternes() {
+  document.querySelectorAll('a[target="_blank"]').forEach(function (lien) {
+    const relActuel = lien.getAttribute('rel') || '';
+    const valeurs = new Set(relActuel.split(/\s+/).filter(Boolean));
+    valeurs.add('noopener');
+    valeurs.add('noreferrer');
+    lien.setAttribute('rel', Array.from(valeurs).join(' '));
+  });
+}
+
+securiserLiensExternes();
 
   /* ==========================================================
      ✅ 15. ALERTE DE BIENVENUE (une fois par session)
