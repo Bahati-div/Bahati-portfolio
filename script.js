@@ -466,6 +466,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
   effetsCartes();
 
+   window.addEventListener('load', function () {
+  // Si EmailJS n'a pas pu charger, désactiver proprement le formulaire plutôt que planter au clic
+  if (!window.emailjs) {
+    console.warn('⚠️ EmailJS non chargé : le formulaire restera en mode lecture.');
+    const btn = document.getElementById('submit-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.querySelector('.btn-text').textContent = 'Formulaire indisponible';
+    }
+  }
+});
+
    /* ============================================================
    🔌 CONFIGURATION EMAILJS
    Remplace les 3 valeurs ci-dessous par les tiennes :
