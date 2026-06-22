@@ -466,6 +466,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   effetsCartes();
 
+   /* ============================================================
+   🔌 CONFIGURATION EMAILJS
+   Remplace les 3 valeurs ci-dessous par les tiennes :
+
+   1. SERVICE_ID  → Email Services (dans ton dashboard EmailJS)
+   2. TEMPLATE_ID → Email Templates
+   3. PUBLIC_KEY  → Account > General > Public Key
+   ============================================================ */
+const EMAILJS_CONFIG = {
+  SERVICE_ID:  'TON_SERVICE_ID',   // ex : 'service_abc1234'
+  TEMPLATE_ID: 'TON_TEMPLATE_ID',  // ex : 'template_xyz5678'
+  PUBLIC_KEY:  'TA_PUBLIC_KEY',    // ex : 'AbCdEfGhIjKlMnOp'
+};
+
 
   /* ==========================================================
      ✅ 13. VALIDATION DU FORMULAIRE DE CONTACT
